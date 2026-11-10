@@ -1,0 +1,401 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens.
+ * Values come from the active theme (themes/css-vars.ts sets --ce-* on <html>).
+ * The fallbacks below only apply if a token is missing.
+ */
+:root {
+  --ce-color-background: #ffffff;
+  --ce-color-surface: #f3f4f6;
+  --ce-color-text: #101418;
+  --ce-color-text-muted: #56606b;
+  --ce-color-border: #dadee3;
+  --ce-color-primary: #101418;
+  --ce-color-primary-foreground: #ffffff;
+  --ce-color-secondary: #e7ebfb;
+  --ce-color-secondary-foreground: #13247a;
+  --ce-color-accent: #1f3fd6;
+  --ce-color-accent-foreground: #ffffff;
+  --ce-color-success: #17734a;
+  --ce-color-warning: #8a5a00;
+  --ce-color-danger: #b42318;
+  --ce-radius-sm: 4px;
+  --ce-radius-md: 8px;
+  --ce-radius-lg: 12px;
+  --ce-radius-control: 8px;
+  --ce-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.06);
+  --ce-shadow-md: 0 8px 20px -10px rgb(0 0 0 / 0.2);
+  --ce-shadow-lg: 0 24px 48px -24px rgb(0 0 0 / 0.3);
+  --ce-space-section: clamp(3rem, 1.75rem + 5vw, 6rem);
+  --ce-space-container: 1280px;
+  --ce-space-gutter: clamp(1rem, 0.25rem + 3vw, 2.5rem);
+  --ce-motion-fast: 120ms;
+  --ce-motion-base: 200ms;
+  --ce-motion-slow: 400ms;
+  --ce-motion-ease: cubic-bezier(0.2, 0, 0, 1);
+  --ce-heading-weight: 600;
+  --ce-heading-tracking: -0.02em;
+  --ce-heading-leading: 1.05;
+  --ce-body-leading: 1.55;
+  --ce-heading-scale: 1;
+  --ce-header-height: 4rem;
+}
+
+@theme inline {
+  --color-background: var(--ce-color-background);
+  --color-surface: var(--ce-color-surface);
+  --color-foreground: var(--ce-color-text);
+  --color-muted: var(--ce-color-text-muted);
+  --color-border: var(--ce-color-border);
+  --color-primary: var(--ce-color-primary);
+  --color-primary-foreground: var(--ce-color-primary-foreground);
+  --color-secondary: var(--ce-color-secondary);
+  --color-secondary-foreground: var(--ce-color-secondary-foreground);
+  --color-accent: var(--ce-color-accent);
+  --color-accent-foreground: var(--ce-color-accent-foreground);
+  --color-success: var(--ce-color-success);
+  --color-warning: var(--ce-color-warning);
+  --color-danger: var(--ce-color-danger);
+
+  --font-heading: var(--ce-font-heading, ui-sans-serif, system-ui, sans-serif);
+  --font-body: var(--ce-font-body, ui-sans-serif, system-ui, sans-serif);
+
+  --radius-sm: var(--ce-radius-sm);
+  --radius-md: var(--ce-radius-md);
+  --radius-lg: var(--ce-radius-lg);
+  --radius-control: var(--ce-radius-control);
+
+  --shadow-sm: var(--ce-shadow-sm);
+  --shadow-md: var(--ce-shadow-md);
+  --shadow-lg: var(--ce-shadow-lg);
+
+  --ease-brand: var(--ce-motion-ease);
+  --spacing-section: var(--ce-space-section);
+  --spacing-gutter: var(--ce-space-gutter);
+  --container-site: var(--ce-space-container);
+}
+
+@layer base {
+  html {
+    background: var(--ce-color-background);
+    color: var(--ce-color-text);
+    scroll-padding-top: calc(var(--ce-header-height) + 1rem);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: var(--ce-font-body, ui-sans-serif, system-ui, sans-serif);
+    line-height: var(--ce-body-leading);
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ce-color-text);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--ce-color-accent);
+    color: var(--ce-color-accent-foreground);
+  }
+}
+
+/*
+ * Type scale. Sizes are fluid between 320px and 1440px and multiplied by the
+ * theme's heading scale, so a preset can run larger or tighter overall.
+ */
+@utility type-display {
+  font-family: var(--ce-font-heading, ui-sans-serif, system-ui, sans-serif);
+  font-weight: var(--ce-heading-weight);
+  letter-spacing: var(--ce-heading-tracking);
+  line-height: var(--ce-heading-leading);
+  font-size: calc(clamp(2.5rem, 1.357rem + 5.71vw, 6.5rem) * var(--ce-heading-scale));
+}
+
+@utility type-h1 {
+  font-family: var(--ce-font-heading, ui-sans-serif, system-ui, sans-serif);
+  font-weight: var(--ce-heading-weight);
+  letter-spacing: var(--ce-heading-tracking);
+  line-height: var(--ce-heading-leading);
+  font-size: calc(clamp(2.125rem, 1.482rem + 3.21vw, 4.375rem) * var(--ce-heading-scale));
+}
+
+@utility type-h2 {
+  font-family: var(--ce-font-heading, ui-sans-serif, system-ui, sans-serif);
+  font-weight: var(--ce-heading-weight);
+  letter-spacing: var(--ce-heading-tracking);
+  line-height: calc(var(--ce-heading-leading) + 0.06);
+  font-size: calc(clamp(1.75rem, 1.393rem + 1.79vw, 3rem) * var(--ce-heading-scale));
+}
+
+@utility type-h3 {
+  font-family: var(--ce-font-heading, ui-sans-serif, system-ui, sans-serif);
+  font-weight: var(--ce-heading-weight);
+  letter-spacing: calc(var(--ce-heading-tracking) * 0.6);
+  line-height: 1.15;
+  font-size: calc(clamp(1.375rem, 1.232rem + 0.71vw, 1.875rem) * var(--ce-heading-scale));
+}
+
+@utility type-h4 {
+  font-family: var(--ce-font-heading, ui-sans-serif, system-ui, sans-serif);
+  font-weight: var(--ce-heading-weight);
+  letter-spacing: calc(var(--ce-heading-tracking) * 0.4);
+  line-height: 1.25;
+  font-size: clamp(1.125rem, 1.089rem + 0.18vw, 1.25rem);
+}
+
+@utility type-body-lg {
+  font-size: clamp(1.0625rem, 1.009rem + 0.27vw, 1.25rem);
+  line-height: 1.5;
+}
+
+@utility type-body {
+  font-size: 1rem;
+  line-height: var(--ce-body-leading);
+}
+
+@utility type-small {
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+@utility type-caption {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+@utility type-button {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* Page-width wrapper with the theme's gutter. */
+@utility container-site {
+  width: 100%;
+  max-width: calc(var(--ce-space-container) + var(--ce-space-gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--ce-space-gutter);
+}
+
+/* One load sequence for the first screen; everything else stays still. */
+@keyframes ce-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+@utility animate-rise {
+  animation: ce-rise var(--ce-motion-slow) var(--ce-motion-ease) both;
+  animation-delay: calc(var(--rise-step, 0) * 90ms);
+}
+
+/* themes: variants.animation = "none" */
+[data-animation="none"] *,
+[data-animation="none"] *::before,
+[data-animation="none"] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Drawer, overlay and accordion motion (components/ui/sheet.tsx, accordion.tsx). */
+@keyframes ce-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes ce-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes ce-slide-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+}
+@keyframes ce-slide-out-left {
+  to {
+    transform: translateX(-100%);
+  }
+}
+@keyframes ce-slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+}
+@keyframes ce-slide-out-right {
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes ce-accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+@keyframes ce-accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+/* Long-form text written outside the codebase (Shopify policies). */
+@utility rich-text {
+  max-width: 70ch;
+  line-height: 1.65;
+
+  & > * + * {
+    margin-top: 1em;
+  }
+  & h2,
+  & h3,
+  & h4 {
+    font-family: var(--ce-font-heading, ui-sans-serif, system-ui, sans-serif);
+    font-weight: var(--ce-heading-weight);
+    letter-spacing: calc(var(--ce-heading-tracking) * 0.5);
+    line-height: 1.2;
+    margin-top: 1.8em;
+  }
+  & h2 {
+    font-size: 1.5rem;
+  }
+  & h3 {
+    font-size: 1.25rem;
+  }
+  & a {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  & ul,
+  & ol {
+    padding-left: 1.4em;
+  }
+  & ul {
+    list-style: disc;
+  }
+  & ol {
+    list-style: decimal;
+  }
+  & li + li {
+    margin-top: 0.4em;
+  }
+  & table {
+    width: 100%;
+    border-collapse: collapse;
+    display: block;
+    overflow-x: auto;
+  }
+  & th,
+  & td {
+    border-bottom: 1px solid var(--ce-color-border);
+    padding: 0.6em 0.8em 0.6em 0;
+    text-align: left;
+  }
+  & img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/*
+ * Store Builder dashboard. It has its own neutral look so it reads the same
+ * whatever the client's brand is. The storefront's --ce-* tokens are
+ * re-declared inside .dashboard, so shared components adapt automatically.
+ */
+.dashboard {
+  --ce-color-background: #ffffff;
+  --ce-color-surface: #f4f5f7;
+  --ce-color-text: #14171a;
+  --ce-color-text-muted: #5b6470;
+  --ce-color-border: #dfe2e7;
+  --ce-color-primary: #1f3fd6;
+  --ce-color-primary-foreground: #ffffff;
+  --ce-color-secondary: #e7ebfb;
+  --ce-color-secondary-foreground: #13247a;
+  --ce-color-accent: #1f3fd6;
+  --ce-color-accent-foreground: #ffffff;
+  --ce-color-success: #17734a;
+  --ce-color-warning: #8a5a00;
+  --ce-color-danger: #b42318;
+  --ce-radius-sm: 4px;
+  --ce-radius-md: 8px;
+  --ce-radius-lg: 12px;
+  --ce-radius-control: 8px;
+  --ce-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.06);
+  --ce-shadow-md: 0 8px 20px -10px rgb(0 0 0 / 0.2);
+  --ce-shadow-lg: 0 24px 48px -24px rgb(0 0 0 / 0.35);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  color-scheme: light;
+}
+
+.dashboard[data-mode="dark"] {
+  --ce-color-background: #16181d;
+  --ce-color-surface: #0e1014;
+  --ce-color-text: #eef0f3;
+  --ce-color-text-muted: #9aa3af;
+  --ce-color-border: #2b2f37;
+  --ce-color-primary: #8fa5ff;
+  --ce-color-primary-foreground: #0b1030;
+  --ce-color-secondary: #232a45;
+  --ce-color-secondary-foreground: #c9d3ff;
+  --ce-color-accent: #8fa5ff;
+  --ce-color-accent-foreground: #0b1030;
+  --ce-color-success: #5fd39a;
+  --ce-color-warning: #f0c060;
+  --ce-color-danger: #ff8a80;
+  color-scheme: dark;
+}
+
+/* Logo marquee (components/sections/logo-marquee.tsx). */
+@keyframes ce-marquee {
+  to {
+    transform: translateX(-100%);
+  }
+}
+.ce-marquee-track {
+  animation: ce-marquee 36s linear infinite;
+}
+.ce-marquee:hover .ce-marquee-track,
+.ce-marquee:focus-within .ce-marquee-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ce-marquee {
+    overflow-x: auto;
+  }
+  .ce-marquee-track[aria-hidden] {
+    display: none;
+  }
+}

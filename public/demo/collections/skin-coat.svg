@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000" role="img" aria-label="Skin and coat">
+  <rect width="800" height="1000" fill="#FADCD5"/>
+  <circle cx="400" cy="430" r="250" fill="#E8836F"/>
+  <g transform="translate(400 430) scale(2.9)"><path fill="#F6F7F1" d="M0-62C28-24 44-2 44 20a44 44 0 0 1-88 0C-44-2-28-24 0-62Z"/></g>
+</svg>

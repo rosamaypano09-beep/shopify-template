@@ -1,0 +1,259 @@
+{
+  "homepage": {
+    "sections": [
+      {
+        "id": "hero",
+        "enabled": true,
+        "type": "hero",
+        "variant": "split",
+        "title": "From NYC now back in Manila, Pies from Michelin Bib awarded Purple Yam Brooklyn",
+        "subtitle": "From NYC now back in Manila, Pies from Michelin Bib awarded Purple Yam Brooklyn",
+        "primaryCta": {
+          "label": "Shop best sellers",
+          "href": "/collections/best-sellers"
+        },
+        "secondaryCta": {
+          "label": "Browse everything",
+          "href": "/collections"
+        },
+        "image": {
+          "src": "/demo/hero.svg",
+          "alt": "Three Bantay Daily supplement jars beside a yellow ball",
+          "position": "center"
+        }
+      },
+      {
+        "id": "shop-by-need",
+        "enabled": true,
+        "background": "surface",
+        "type": "collectionGrid",
+        "title": "What are you craving?",
+        "description": "Explore our selection of freshly made pies, from whole pies to petite treats.",
+        "handles": [
+          "best-sellers",
+          "whole-pie",
+          "mini-pies",
+          "petit-pies"
+        ]
+      },
+      {
+        "id": "benefits",
+        "enabled": true,
+        "type": "benefits",
+        "items": [
+          {
+            "icon": "leaf",
+            "title": "Made with Quality Ingredients",
+            "body": "Made with carefully selected ingredients for a delicious homemade taste."
+          },
+          {
+            "icon": "truck",
+            "title": "Pickup & Delivery",
+            "body": "Order ahead and enjoy Purple Yam pies through pickup or delivery in Manila."
+          }
+        ]
+      },
+      {
+        "id": "best-sellers",
+        "enabled": true,
+        "background": "surface",
+        "type": "featuredProducts",
+        "title": "Our Bestselling Pies",
+        "description": "Discover the pies our customers love most, freshly made and perfect for sharing.",
+        "collectionHandle": "best-sellers",
+        "limit": 4,
+        "cta": {
+          "label": "See all bestselling pies",
+          "href": "/collections/best-sellers"
+        }
+      },
+      {
+        "id": "home-faq",
+        "enabled": true,
+        "type": "faq",
+        "title": "Before You Order",
+        "items": [
+          {
+            "question": "How far in advance should I place my order?",
+            "answer": "We offer pickup and delivery in Manila. Delivery availability and fees are shown when you place your order."
+          },
+          {
+            "question": "What days are you open?",
+            "answer": "We are open for orders and fulfillment every Thursday, Friday, and Saturday."
+          },
+          {
+            "question": "Where can I pick up my order?",
+            "answer": "For the best quality and freshness, keep your pie refrigerated and follow the storage instructions provided with your order."
+          },
+          {
+            "question": "Can I order a whole pie or smaller portions?",
+            "answer": "Yes. We offer whole pies, mini pies, and petit pies, as well as bundles for sharing."
+          }
+        ],
+        "cta": {
+          "label": "View all FAQs",
+          "href": "/faq"
+        }
+      },
+      {
+        "id": "newsletter",
+        "enabled": true,
+        "background": "surface",
+        "type": "newsletter",
+        "title": "Stay in the Loop",
+        "description": "Be the first to hear about new pies, special offerings, seasonal treats, and occasional updates from Purple Yam."
+      },
+      {
+        "id": "testimonials",
+        "enabled": true,
+        "type": "testimonials",
+        "title": "What Our Customers Say",
+        "items": [
+          {
+            "quote": "“Absolutely loved the pie! The crust was perfectly baked and the filling was rich and delicious. Definitely ordering again.”",
+            "name": "Maria Santos",
+            "detail": "Manila"
+          },
+          {
+            "quote": "“Purple Yam is now one of our favorite dessert spots. We ordered a whole pie for a family gathering and everyone loved it.”",
+            "name": "Anna Reyes",
+            "detail": "Makati"
+          },
+          {
+            "quote": "“The pie was fresh, beautifully made, and tasted even better than I expected. Perfect with coffee after dinner.”",
+            "name": "Carlo Mendoza",
+            "detail": "Quezon City"
+          },
+          {
+            "quote": "“I ordered this for a small celebration and it was a hit! The presentation was beautiful and the pie was absolutely delicious.”",
+            "name": "Bea Garcia",
+            "detail": "Pasig"
+          },
+          {
+            "quote": "“Such a wonderful dessert experience. You can really taste the quality of the ingredients. Purple Yam has become our go-to for special occasions.”",
+            "name": "James Cruz",
+            "detail": "Manila"
+          }
+        ]
+      },
+      {
+        "id": "statement",
+        "enabled": true,
+        "type": "brandStatement",
+        "text": "From New York to Manila, Purple Yam brings the flavors and spirit of our beloved pies back home.",
+        "attribution": "Purple Yam",
+        "cta": {
+          "label": "Discover Our Story",
+          "href": "/about"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "header": {
+      "transparent": true
+    },
+    "announcement": {
+      "enabled": true
+    },
+    "main": [
+      {
+        "label": "Shop",
+        "href": "/collections",
+        "groups": [
+          {
+            "title": "By need",
+            "links": [
+              {
+                "label": "Joints and mobility",
+                "href": "/collections/joints-mobility"
+              },
+              {
+                "label": "Skin and coat",
+                "href": "/collections/skin-coat"
+              },
+              {
+                "label": "Digestion",
+                "href": "/collections/digestion"
+              },
+              {
+                "label": "Calm",
+                "href": "/collections/calm"
+              }
+            ]
+          },
+          {
+            "title": "By life stage",
+            "links": [
+              {
+                "label": "Puppies",
+                "href": "/collections/puppy"
+              },
+              {
+                "label": "Seniors",
+                "href": "/collections/senior"
+              }
+            ]
+          },
+          {
+            "title": "Start here",
+            "links": [
+              {
+                "label": "Best sellers",
+                "href": "/collections/best-sellers"
+              },
+              {
+                "label": "Everything",
+                "href": "/collections"
+              }
+            ]
+          }
+        ],
+        "feature": {
+          "title": "Not sure where to start?",
+          "description": "Most dogs do well on the daily multivitamin. Add one targeted chew if your vet suggests it.",
+          "href": "/products/everyday-multivitamin-chews",
+          "image": "/demo/products/everyday-multivitamin-chews.svg"
+        }
+      },
+      {
+        "label": "Best sellers",
+        "href": "/collections/best-sellers"
+      }
+    ]
+  },
+  "store": {
+    "name": "PY Pastry Kitchen",
+    "description": "From NYC now back in Manila, serving pies from Michelin Bib awarded Purple Yam Brooklyn.",
+    "contact": {
+      "email": "purpleyamph@gmail.com",
+      "phone": "+63 966 235 1036"
+    },
+    "social": {
+      "instagram": "https://www.instagram.com/purpleyam.mnl",
+      "facebook": "https://www.facebook.com/purpleyammalate/",
+      "tiktok": "https://www.tiktok.com/@purpleyam.mnl"
+    }
+  },
+  "theme": {
+    "preset": "minimal",
+    "tokens": {
+      "colors": {
+        "primary": "#6E3B73",
+        "accent": "#9B6A9F",
+        "background": "#FFFDF8",
+        "text": "#2D2428",
+        "surface": "#F5EEF5",
+        "textMuted": "#746A70",
+        "secondary": "#E8D9E8",
+        "secondaryForeground": "#4A304C",
+        "border": "#E5DDE2"
+      }
+    }
+  },
+  "seo": {
+    "defaultTitle": "Purple Yam | Pies from NYC, Now in Manila",
+    "defaultDescription": "Discover Purple Yam pies, from NYC now back in Manila. Freshly made pies available for pickup and delivery. Order ahead.",
+    "titleTemplate": "%s | Purple Yam"
+  }
+}

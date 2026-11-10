@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000" role="img" aria-label="Puppies">
+  <rect width="800" height="1000" fill="#F8DAE4"/>
+  <circle cx="400" cy="430" r="250" fill="#D9608A"/>
+  <g transform="translate(400 430) scale(2.9)"><g fill="#F6F7F1"><ellipse cx="0" cy="24" rx="34" ry="28"/><ellipse cx="-42" cy="-10" rx="14" ry="18"/><ellipse cx="-15" cy="-36" rx="14" ry="19"/><ellipse cx="15" cy="-36" rx="14" ry="19"/><ellipse cx="42" cy="-10" rx="14" ry="18"/></g></g>
+</svg>

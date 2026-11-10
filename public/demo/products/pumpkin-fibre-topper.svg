@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800" role="img" aria-label="Pumpkin Fibre Topper">
+  <rect width="800" height="800" fill="#FAE6CF"/>
+  <ellipse cx="400" cy="690" rx="230" ry="26" fill="#17251C" opacity="0.12"/>
+  <path d="M236 190h328l34 446a40 40 0 0 1-40 44H242a40 40 0 0 1-40-44Z" fill="#D9822B"/>
+  <rect x="236" y="168" width="328" height="46" rx="10" fill="#17251C"/>
+  <path d="M236 190h50l-30 490h-14a40 40 0 0 1-40-44Z" fill="#fff" opacity="0.14"/>
+  <rect x="272" y="300" width="256" height="290" rx="18" fill="#F6F7F1"/>
+  <g transform="translate(400 387) scale(0.82)"><g><path fill="#D9822B" d="M-52 48C-60-22-8-58 56-54 60 10 24 62-52 48Z"/><path d="M-44 42 30-30" stroke="#F6F7F1" stroke-width="7" stroke-linecap="round" fill="none"/></g></g>
+  <text x="400" y="491.4" text-anchor="middle" font-family="Verdana, Geneva, sans-serif" font-weight="700" font-size="32" fill="#17251C">Pumpkin</text><text x="400" y="531.4" text-anchor="middle" font-family="Verdana, Geneva, sans-serif" font-weight="700" font-size="32" fill="#17251C">Fibre</text>
+  <text x="400" y="568" text-anchor="middle" font-family="Verdana, Geneva, sans-serif" font-size="19" fill="#17251C" opacity="0.7">150 g powder</text>
+</svg>

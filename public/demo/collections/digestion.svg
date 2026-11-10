@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000" role="img" aria-label="Digestion">
+  <rect width="800" height="1000" fill="#FBEFC4"/>
+  <circle cx="400" cy="430" r="250" fill="#F2C230"/>
+  <g transform="translate(400 430) scale(2.9)"><g><path fill="#17251C" d="M-52 48C-60-22-8-58 56-54 60 10 24 62-52 48Z"/><path d="M-44 42 30-30" stroke="#F6F7F1" stroke-width="7" stroke-linecap="round" fill="none"/></g></g>
+</svg>
