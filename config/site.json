@@ -412,7 +412,7 @@
       "transparent": true
     },
     "announcement": {
-      "enabled": true
+      "enabled": false
     },
     "source": "config",
     "main": [
