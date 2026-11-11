@@ -538,6 +538,6 @@
     "titleTemplate": "%s | Purple Yam"
   },
   "theme": {
-    "preset": "midnight"
+    "preset": "velvet"
   }
 }
