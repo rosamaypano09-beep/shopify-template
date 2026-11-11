@@ -1,5 +1,6 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
+import { connection } from "next/server";
 import { getAdminConnection, type AdminConnection } from "@/lib/env";
 import { logger } from "@/lib/logger";
 
@@ -107,6 +108,8 @@ export type OrderCountStatus =
  * cover every order (read_all_orders) or only the last 60 days. Not cached.
  */
 export async function getOrderCountStatus(): Promise<OrderCountStatus> {
+  // A live check for the dashboard: always at request time, never prerendered.
+  await connection();
   const admin = getAdminConnection();
   if (!admin) return { connected: false, reason: "not-configured" };
   try {

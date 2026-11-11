@@ -42,13 +42,13 @@
         ],
         "layout": "curve",
         "curve": "wave",
-        "font": "heading",
-        "size": "md",
-        "separator": "sparkle",
         "speed": "normal",
         "direction": "left",
-        "uppercase": true,
+        "size": "md",
+        "font": "heading",
         "italic": true,
+        "uppercase": true,
+        "separator": "sparkle",
         "ribbon": "brand",
         "overlap": true,
         "straightOnPhones": true
@@ -312,11 +312,13 @@
         "enabled": true,
         "type": "testimonials",
         "title": "What Our Customers Say",
+        "layout": "featured",
         "items": [
           {
             "quote": "Absolutely loved the pie! The crust was perfectly baked and the filling was rich and delicious. Definitely ordering again.",
-            "name": "Maria Santos",
-            "detail": "Manila"
+            "name": "Rolando Valle",
+            "detail": "Naga City",
+            "avatar": "/uploads/336985059-526034286280310-3571201416073229861-n-20261111-5ks8l.jpg"
           },
           {
             "quote": "Purple Yam is now one of our favorite dessert spots. We ordered a whole pie for a family gathering and everyone loved it.",
@@ -338,8 +340,7 @@
             "name": "James Cruz",
             "detail": "Manila"
           }
-        ],
-        "layout": "featured"
+        ]
       },
       {
         "id": "home-faq",

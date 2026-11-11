@@ -1057,7 +1057,9 @@ export function SectionsEditor({ sections }: { sections: SectionConfig[] }) {
 
   // Live preview of the unsaved draft.
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [draftId] = useState(newDraftId);
+  // Made on first use in the browser, never while the page is prerendered.
+  const draftIdRef = useRef<string | null>(null);
+  const draftId = () => (draftIdRef.current ??= newDraftId());
   const [version, setVersion] = useState(0);
   const [previewBusy, setPreviewBusy] = useState(false);
   const [previewError, setPreviewError] = useState<string | null>(null);
@@ -1068,7 +1070,7 @@ export function SectionsEditor({ sections }: { sections: SectionConfig[] }) {
     const run = ++latest.current;
     const timer = window.setTimeout(async () => {
       setPreviewBusy(true);
-      const result = await saveHomepageDraftAction(draftId, draft.map(clean));
+      const result = await saveHomepageDraftAction(draftId(), draft.map(clean));
       if (run !== latest.current) return;
       setPreviewBusy(false);
       if (result.ok) {
@@ -1077,7 +1079,7 @@ export function SectionsEditor({ sections }: { sections: SectionConfig[] }) {
       } else setPreviewError(result.error);
     }, 600);
     return () => window.clearTimeout(timer);
-  }, [draft, previewOpen, draftId]);
+  }, [draft, previewOpen]);
 
   const update = (next: Obj[]) => {
     setDraft(next);
@@ -1268,7 +1270,7 @@ export function SectionsEditor({ sections }: { sections: SectionConfig[] }) {
       {editor}
       <div className="xl:sticky xl:top-20 xl:self-start">
         <HomepagePreview
-          src={`/dashboard/draft?id=${draftId}&v=${version}`}
+          src={`/dashboard/draft?id=${draftId()}&v=${version}`}
           focusId={open}
           busy={previewBusy}
           error={previewError}
