@@ -4,6 +4,7 @@ import { buildClientSchema, Kind, parse, validate } from "graphql";
 import { getVariableValues } from "graphql/execution/values";
 import { describe, expect, it } from "vitest";
 import {
+  CART_ATTRIBUTES_MUTATION,
   CART_CREATE_MUTATION,
   CART_DISCOUNT_CODES_MUTATION,
   CART_LINES_ADD_MUTATION,
@@ -12,13 +13,18 @@ import {
   CART_QUERY,
 } from "@/lib/shopify/cart-live";
 import {
+  ARTICLE_QUERY,
+  BLOG_QUERY,
   COLLECTION_QUERY,
+  CONTENT_INDEX_QUERY,
   COLLECTIONS_QUERY,
   PREDICTIVE_SEARCH_QUERY,
   PRODUCT_QUERY,
   POLICIES_QUERY,
   PRODUCTS_QUERY,
   RECOMMENDATIONS_QUERY,
+  MENU_QUERY,
+  PAGE_QUERY,
   SEARCH_QUERY,
 } from "@/lib/shopify/live";
 
@@ -41,12 +47,18 @@ const queries = {
   PREDICTIVE_SEARCH_QUERY,
   RECOMMENDATIONS_QUERY,
   POLICIES_QUERY,
+  BLOG_QUERY,
+  ARTICLE_QUERY,
+  PAGE_QUERY,
+  MENU_QUERY,
+  CONTENT_INDEX_QUERY,
   CART_QUERY,
   CART_CREATE_MUTATION,
   CART_LINES_ADD_MUTATION,
   CART_LINES_UPDATE_MUTATION,
   CART_LINES_REMOVE_MUTATION,
   CART_DISCOUNT_CODES_MUTATION,
+  CART_ATTRIBUTES_MUTATION,
 };
 
 describe("Storefront API queries and mutations", () => {

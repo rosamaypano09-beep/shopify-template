@@ -2,7 +2,9 @@
 
 import { cookies } from "next/headers";
 import { z } from "zod";
+import { getSiteConfig } from "@/config";
 import { logger } from "@/lib/logger";
+import { formatScheduleDate, isAllowedChoice, SCHEDULE_DATE_KEY } from "@/lib/ordering/schedule";
 import { ShopifyError } from "@/lib/shopify/errors";
 import { getCartSource } from "@/lib/shopify/source";
 import type { Cart } from "@/lib/shopify/types";
@@ -19,7 +21,8 @@ const THIRTY_DAYS = 60 * 60 * 24 * 30;
 export type CartResult = { ok: true; cart: Cart | null } | { ok: false; error: string };
 
 const id = z.string().min(1).max(600);
-const addInput = z.object({ merchandiseId: id, quantity: z.number().int().min(1).max(99) });
+const attribute = z.object({ key: z.string().trim().min(1).max(40), value: z.string().trim().min(1).max(250) });
+const addInput = z.object({ merchandiseId: id, quantity: z.number().int().min(1).max(99), attributes: z.array(attribute).max(5).optional() });
 const updateInput = z.object({ lineId: id, quantity: z.number().int().min(0).max(99) });
 const codeInput = z.string().trim().min(1).max(60);
 
@@ -74,7 +77,12 @@ export async function getCartAction(): Promise<CartResult> {
   }
 }
 
-export async function addToCartAction(input: { merchandiseId: string; quantity: number }): Promise<CartResult> {
+export async function addToCartAction(input: {
+  merchandiseId: string;
+  quantity: number;
+  /** Notes kept on the line and passed to the order, for example the flavours of a bundle. */
+  attributes?: { key: string; value: string }[];
+}): Promise<CartResult> {
   const parsed = addInput.safeParse(input);
   if (!parsed.success) return { ok: false, error: "That item can't be added. Refresh the page and try again." };
   const source = getCartSource();
@@ -137,4 +145,29 @@ export async function buyNowAction(input: {
     const result = fail("buy-now", error);
     return { ok: false, error: result.ok ? "" : result.error };
   }
+}
+
+const scheduleInput = z.object({ date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), time: z.string().trim().min(1).max(60) });
+
+/**
+ * Saves the pickup or delivery date and time on the order (Shopify admin:
+ * Additional details). The choice is checked against the store's rules in its
+ * own time zone, so a date past its cut-off can never be saved.
+ */
+export async function setOrderScheduleAction(input: { date: string; time: string }): Promise<CartResult> {
+  const parsed = scheduleInput.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "Choose a date and a time." };
+  const { store } = getSiteConfig();
+  const ordering = store.ordering;
+  if (!ordering?.scheduling) return { ok: false, error: "Scheduling is not turned on for this store." };
+  if (!isAllowedChoice(new Date(), store.locale.timezone, ordering, parsed.data.date, parsed.data.time)) {
+    return { ok: false, error: "That date or time is no longer available. Please choose another." };
+  }
+  return mutate("schedule", (cartId) =>
+    getCartSource().updateAttributes(cartId, [
+      { key: ordering.dateLabel, value: formatScheduleDate(parsed.data.date, store.locale.language) },
+      { key: ordering.timeLabel, value: parsed.data.time },
+      { key: SCHEDULE_DATE_KEY, value: parsed.data.date },
+    ]),
+  );
 }

@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { CSSProperties } from "react";
 import { getSiteConfig } from "@/config";
-import { bodyFont, headingFont } from "@/config/fonts";
+import { bodyFont, extraFontVariables, headingFont } from "@/config/fonts";
 import { JsonLd } from "@/components/seo/json-ld";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { themeToCssVars } from "@/themes/css-vars";
@@ -36,7 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang={store.locale.language}
-      className={`${headingFont.variable} ${bodyFont.variable} h-full antialiased`}
+      className={`${headingFont.variable} ${bodyFont.variable} ${extraFontVariables} h-full antialiased`}
       style={themeToCssVars(theme) as CSSProperties}
       data-theme={theme.id}
       data-animation={theme.variants.animation}

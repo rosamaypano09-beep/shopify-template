@@ -9,7 +9,7 @@ export function Newsletter({ config }: { config: NewsletterSectionConfig }) {
   if (!getSiteConfig().features.newsletter || formMode("newsletter") === "off") return null;
 
   return (
-    <Section id={config.id} background={config.background}>
+    <Section config={config}>
       <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-16">
         <div className="flex flex-col gap-3">
           <h2 className="type-h2">{config.title}</h2>

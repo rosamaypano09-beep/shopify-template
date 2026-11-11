@@ -4,23 +4,54 @@
       {
         "id": "hero",
         "enabled": true,
+        "eyebrow": "A Manila heirloom, hand-baked daily",
+        "titleAccent": "culinary heritage.",
         "type": "hero",
-        "variant": "split",
-        "title": "From NYC now back in Manila, Pies from Michelin Bib awarded Purple Yam Brooklyn",
-        "subtitle": "From NYC now back in Manila, Pies from Michelin Bib awarded Purple Yam Brooklyn",
+        "variant": "spotlight",
+        "title": "The ultimate gift of",
+        "subtitle": "Meticulously crafted Buko Ube Pie by the Michelin-awarded owners of Cendrillon and Purple Yam Brooklyn. Now in Manila.",
         "primaryCta": {
-          "label": "Shop best sellers",
-          "href": "/collections/best-sellers"
+          "label": "Reserve your fresh batch",
+          "href": "/collections/whole-pie"
         },
-        "secondaryCta": {
-          "label": "Browse everything",
-          "href": "/collections"
-        },
+        "addToCartHandle": "whole-buko-nipa-ube-py",
+        "proof": "As featured in The New York Times, Michelin Guide & James Beard Foundation",
         "image": {
-          "src": "/demo/hero.svg",
-          "alt": "Three Bantay Daily supplement jars beside a yellow ball",
+          "src": "/demo/Hero.png",
+          "alt": "Ube pies, a calamansi meringue tart and a whole baked pie on a wooden board",
           "position": "center"
         }
+      },
+      {
+        "id": "highlights",
+        "enabled": true,
+        "type": "highlights",
+        "items": [
+          {
+            "text": "Whole, mini & petit pies"
+          },
+          {
+            "text": "Pickup & delivery in Manila"
+          },
+          {
+            "text": "Open Thursday to Saturday"
+          },
+          {
+            "text": "Made with quality ingredients"
+          }
+        ],
+        "layout": "curve",
+        "curve": "wave",
+        "font": "heading",
+        "size": "md",
+        "separator": "sparkle",
+        "speed": "normal",
+        "direction": "left",
+        "uppercase": true,
+        "italic": true,
+        "ribbon": "brand",
+        "overlap": true,
+        "straightOnPhones": true
       },
       {
         "id": "shop-by-need",
@@ -54,24 +85,270 @@
         ]
       },
       {
+        "id": "story",
+        "enabled": true,
+        "eyebrow": "Our story",
+        "titleAccent": "tasted like home?",
+        "type": "imageText",
+        "title": "When was the last time a gift",
+        "body": "Purple Yam began in Brooklyn and earned a Michelin Bib Gourmand there. Now the pies are back in Manila, baked from the same heritage recipes for your table and the people you love.",
+        "image": {
+          "src": "/uploads/mini-pie-sampler-board-20261111-js427.png",
+          "alt": "Ube pies, a calamansi meringue tart and a whole baked pie on a wooden board"
+        },
+        "imageSide": "left",
+        "imageFit": "contain",
+        "cards": [
+          {
+            "title": "Whole pies for sharing",
+            "body": "Generous pies for family tables and celebrations."
+          },
+          {
+            "title": "Minis and petits",
+            "body": "Smaller sizes for gifting and tasting every flavour."
+          }
+        ],
+        "cta": {
+          "label": "Discover our story",
+          "href": "/about"
+        }
+      },
+      {
+        "id": "occasions",
+        "enabled": true,
+        "background": "glow",
+        "shape": "curved",
+        "backdrop": "aurora",
+        "align": "center",
+        "eyebrow": "Why Manila loves it",
+        "titleAccent": "something unforgettable.",
+        "type": "featureBand",
+        "title": "Created for people who crave",
+        "itemStyle": "chips",
+        "columns": "2",
+        "iconShape": "circle",
+        "items": [
+          {
+            "icon": "sprout",
+            "text": "Three buko stages",
+            "body": "fghfghfgh"
+          },
+          {
+            "icon": "heart",
+            "text": "Two ube varieties"
+          },
+          {
+            "icon": "leaf",
+            "text": "Nipa starch"
+          },
+          {
+            "icon": "croissant",
+            "text": "Flaky hand-made crust"
+          },
+          {
+            "icon": "flame",
+            "text": "Hand-baked daily"
+          },
+          {
+            "icon": "gift",
+            "text": "Made for gifting"
+          }
+        ],
+        "stat": {
+          "value": "2,000+",
+          "source": "shopifyOrders",
+          "roundDown": "none",
+          "baseline": 2000,
+          "plus": true,
+          "caption": "orders",
+          "label": "and growing",
+          "title": "Making celebrations",
+          "titleAccent": "sweeter.",
+          "body": "From homecomings to family tables, every pie carries a little piece of Manila's culinary heritage.",
+          "countUp": true,
+          "countSeconds": 3
+        }
+      },
+      {
+        "id": "legacy",
+        "enabled": true,
+        "type": "logoMarquee",
+        "title": "A culinary legacy by",
+        "layout": "card",
+        "description": "From their pioneering New York restaurant, Cendrillon, to Purple Yam, celebrating Filipino food, memory, and heritage.",
+        "animated": true,
+        "items": [
+          {
+            "name": "Amy Besa"
+          },
+          {
+            "name": "Romy Dorotan"
+          },
+          {
+            "name": "purple yam",
+            "highlight": true
+          },
+          {
+            "name": "Cendrillon"
+          }
+        ]
+      },
+      {
+        "id": "pick",
+        "enabled": true,
+        "eyebrow": "Mini pie collection",
+        "type": "productSpotlight",
+        "title": "Pick your favorite.",
+        "description": "Four mini pie flavors, perfect for merienda tables and thoughtful gifts.",
+        "products": [
+          {
+            "handle": "mini-buko-nipa-ube-py",
+            "label": "Buko Ube Nipa"
+          },
+          {
+            "handle": "mini-ube-taro-pinipig-crumble-pie",
+            "label": "Ube Taro Pinipig"
+          },
+          {
+            "handle": "mini-calamansi-meringue-py",
+            "label": "Calamansi Meringue"
+          },
+          {
+            "handle": "mini-cashew-panutsa-py",
+            "label": "Cashew Panutsa"
+          }
+        ],
+        "showFromPrice": true,
+        "buttonLabel": "Add mini {name} to bag",
+        "priceInButton": true,
+        "visual": "menu",
+        "imageSide": "left",
+        "menu": {
+          "title": "PY Pastry Kitchen",
+          "items": [
+            {
+              "handle": "mini-buko-nipa-ube-py",
+              "label": "Mini Buko Ube Nipa"
+            },
+            {
+              "handle": "mini-ube-taro-pinipig-crumble-pie",
+              "label": "Mini Ube Taro Pinipig"
+            },
+            {
+              "handle": "mini-calamansi-meringue-py",
+              "label": "Mini Calamansi Meringue"
+            },
+            {
+              "handle": "mini-cashew-panutsa-py",
+              "label": "Mini Cashew Panutsa"
+            },
+            {
+              "handle": "mini-pure-buko-pie",
+              "label": "Mini Pure Buko"
+            },
+            {
+              "handle": "petit-buko-nipa-ube-py",
+              "label": "Petit Buko Ube Nipa"
+            },
+            {
+              "handle": "petit-ube-taro-pinipig-crumble-pie",
+              "label": "Petit Ube Taro Pinipig"
+            },
+            {
+              "handle": "petit-calamansi-meringue-py",
+              "label": "Petit Calamansi Meringue"
+            },
+            {
+              "handle": "petit-cashew-panutsa-py",
+              "label": "Petit Cashew Panutsa"
+            },
+            {
+              "handle": "petit-buko-nipa-py",
+              "label": "Petit Buko Nipa"
+            }
+          ],
+          "linkLabel": "Full menu",
+          "linkHref": "/collections"
+        },
+        "showContact": true,
+        "visualBackground": "#D7B4E3",
+        "panelBackground": "#F6E8CF",
+        "panelText": "#2A1530"
+      },
+      {
         "id": "best-sellers",
         "enabled": true,
-        "background": "surface",
+        "eyebrow": "The menu",
         "type": "featuredProducts",
-        "title": "Our Bestselling Pies",
-        "description": "Discover the pies our customers love most, freshly made and perfect for sharing.",
+        "title": "Fresh from the oven",
+        "description": "Every pie on the menu, baked to order.",
         "collectionHandle": "best-sellers",
-        "limit": 4,
+        "limit": 12,
         "cta": {
           "label": "See all bestselling pies",
           "href": "/collections/best-sellers"
-        }
+        },
+        "tabs": [
+          {
+            "label": "Whole",
+            "collectionHandle": "whole-pie"
+          },
+          {
+            "label": "Mini",
+            "collectionHandle": "mini-pies"
+          },
+          {
+            "label": "Petit",
+            "collectionHandle": "petit-pies"
+          }
+        ],
+        "allLabel": "Best sellers",
+        "columns": "4",
+        "quickAdd": true,
+        "quickAddLabel": "Add to bag"
+      },
+      {
+        "id": "testimonials",
+        "enabled": true,
+        "type": "testimonials",
+        "title": "What Our Customers Say",
+        "items": [
+          {
+            "quote": "Absolutely loved the pie! The crust was perfectly baked and the filling was rich and delicious. Definitely ordering again.",
+            "name": "Maria Santos",
+            "detail": "Manila"
+          },
+          {
+            "quote": "Purple Yam is now one of our favorite dessert spots. We ordered a whole pie for a family gathering and everyone loved it.",
+            "name": "Anna Reyes",
+            "detail": "Makati"
+          },
+          {
+            "quote": "The pie was fresh, beautifully made, and tasted even better than I expected. Perfect with coffee after dinner.",
+            "name": "Carlo Mendoza",
+            "detail": "Quezon City"
+          },
+          {
+            "quote": "I ordered this for a small celebration and it was a hit! The presentation was beautiful and the pie was absolutely delicious.",
+            "name": "Bea Garcia",
+            "detail": "Pasig"
+          },
+          {
+            "quote": "Such a wonderful dessert experience. You can really taste the quality of the ingredients. Purple Yam has become our go-to for special occasions.",
+            "name": "James Cruz",
+            "detail": "Manila"
+          }
+        ],
+        "layout": "featured"
       },
       {
         "id": "home-faq",
         "enabled": true,
+        "background": "surface",
+        "titleAccent": "answered.",
         "type": "faq",
-        "title": "Before You Order",
+        "title": "Pie questions,",
+        "layout": "split",
         "items": [
           {
             "question": "How far in advance should I place my order?",
@@ -96,45 +373,25 @@
         }
       },
       {
+        "id": "journal",
+        "enabled": true,
+        "type": "blogPosts",
+        "title": "From the journal",
+        "description": "Stories from our kitchen, new flavours and pickup updates.",
+        "blogHandle": "news",
+        "limit": 3,
+        "cta": {
+          "label": "Read the journal",
+          "href": "/blogs/news"
+        }
+      },
+      {
         "id": "newsletter",
         "enabled": true,
         "background": "surface",
         "type": "newsletter",
         "title": "Stay in the Loop",
         "description": "Be the first to hear about new pies, special offerings, seasonal treats, and occasional updates from Purple Yam."
-      },
-      {
-        "id": "testimonials",
-        "enabled": true,
-        "type": "testimonials",
-        "title": "What Our Customers Say",
-        "items": [
-          {
-            "quote": "“Absolutely loved the pie! The crust was perfectly baked and the filling was rich and delicious. Definitely ordering again.”",
-            "name": "Maria Santos",
-            "detail": "Manila"
-          },
-          {
-            "quote": "“Purple Yam is now one of our favorite dessert spots. We ordered a whole pie for a family gathering and everyone loved it.”",
-            "name": "Anna Reyes",
-            "detail": "Makati"
-          },
-          {
-            "quote": "“The pie was fresh, beautifully made, and tasted even better than I expected. Perfect with coffee after dinner.”",
-            "name": "Carlo Mendoza",
-            "detail": "Quezon City"
-          },
-          {
-            "quote": "“I ordered this for a small celebration and it was a hit! The presentation was beautiful and the pie was absolutely delicious.”",
-            "name": "Bea Garcia",
-            "detail": "Pasig"
-          },
-          {
-            "quote": "“Such a wonderful dessert experience. You can really taste the quality of the ingredients. Purple Yam has become our go-to for special occasions.”",
-            "name": "James Cruz",
-            "detail": "Manila"
-          }
-        ]
       },
       {
         "id": "statement",
@@ -156,69 +413,91 @@
     "announcement": {
       "enabled": true
     },
+    "source": "config",
     "main": [
       {
-        "label": "Shop",
+        "label": "Shop Pies",
         "href": "/collections",
         "groups": [
           {
-            "title": "By need",
+            "title": "Shop by Size",
             "links": [
               {
-                "label": "Joints and mobility",
-                "href": "/collections/joints-mobility"
+                "label": "Mini Pies",
+                "href": "/collections/mini-pies"
               },
               {
-                "label": "Skin and coat",
-                "href": "/collections/skin-coat"
-              },
-              {
-                "label": "Digestion",
-                "href": "/collections/digestion"
-              },
-              {
-                "label": "Calm",
-                "href": "/collections/calm"
+                "label": "Whole Pies",
+                "href": "/collections/whole-pie"
               }
             ]
           },
           {
-            "title": "By life stage",
+            "title": "Shop by Flavor",
             "links": [
               {
-                "label": "Puppies",
-                "href": "/collections/puppy"
+                "label": "Buko & Nipa",
+                "href": "/collections/buko-nipa"
               },
               {
-                "label": "Seniors",
-                "href": "/collections/senior"
+                "label": "Ube & Taro",
+                "href": "/collections/ube-taro"
+              },
+              {
+                "label": "Cashew",
+                "href": "/collections/cashew"
+              },
+              {
+                "label": "Calamansi",
+                "href": "/collections/calamansi"
               }
             ]
           },
           {
-            "title": "Start here",
+            "title": "Featured",
             "links": [
               {
-                "label": "Best sellers",
+                "label": "Best Sellers",
                 "href": "/collections/best-sellers"
               },
               {
-                "label": "Everything",
+                "label": "Assorted Pies",
+                "href": "/collections/assorted-pies"
+              },
+              {
+                "label": "All Pies",
                 "href": "/collections"
               }
             ]
           }
         ],
         "feature": {
-          "title": "Not sure where to start?",
-          "description": "Most dogs do well on the daily multivitamin. Add one targeted chew if your vet suggests it.",
-          "href": "/products/everyday-multivitamin-chews",
-          "image": "/demo/products/everyday-multivitamin-chews.svg"
+          "title": "Find Your Favorite Pie",
+          "description": "From bite-sized mini pies to generous whole pies, discover Filipino-inspired flavors made for sharing, gifting, and every sweet occasion.",
+          "href": "/collections/best-sellers",
+          "image": "/uploads/mini-pie-sampler-board-20261111-js427.png",
+          "ctaLabel": "Shop best sellers"
         }
       },
       {
-        "label": "Best sellers",
+        "label": "Mini Pies",
+        "href": "/collections/mini-pies"
+      },
+      {
+        "label": "Whole Pies",
+        "href": "/collections/whole-pie"
+      },
+      {
+        "label": "Best Sellers",
         "href": "/collections/best-sellers"
+      },
+      {
+        "label": "Journal",
+        "href": "/blogs/news"
+      },
+      {
+        "label": "About Us",
+        "href": "/about"
       }
     ]
   },
@@ -233,23 +512,27 @@
       "instagram": "https://www.instagram.com/purpleyam.mnl",
       "facebook": "https://www.facebook.com/purpleyammalate/",
       "tiktok": "https://www.tiktok.com/@purpleyam.mnl"
+    },
+    "ordering": {
+      "cartTitle": "Your bag",
+      "cartNote": "Cut-off for next-day orders is 4 pm.",
+      "scheduling": true,
+      "dateLabel": "Pickup or delivery date",
+      "timeLabel": "Time",
+      "openDays": [
+        4,
+        5,
+        6
+      ],
+      "cutoffHour": 16,
+      "minDaysAhead": 1,
+      "maxDaysAhead": 30,
+      "timeSlots": [],
+      "closedDates": []
     }
   },
   "theme": {
-    "preset": "minimal",
-    "tokens": {
-      "colors": {
-        "primary": "#6E3B73",
-        "accent": "#9B6A9F",
-        "background": "#FFFDF8",
-        "text": "#2D2428",
-        "surface": "#F5EEF5",
-        "textMuted": "#746A70",
-        "secondary": "#E8D9E8",
-        "secondaryForeground": "#4A304C",
-        "border": "#E5DDE2"
-      }
-    }
+    "preset": "velvet"
   },
   "seo": {
     "defaultTitle": "Purple Yam | Pies from NYC, Now in Manila",

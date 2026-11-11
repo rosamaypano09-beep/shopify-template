@@ -33,6 +33,8 @@ export function StoreChrome({ children }: { children: ReactNode }) {
           openDrawerOnAdd: features.cartDrawer,
           freeShippingThreshold: store.promotions.freeShippingThreshold ?? null,
           currency: store.locale.currency,
+          ordering: store.ordering ?? null,
+          timeZone: store.locale.timezone,
         }}
       >
         <div

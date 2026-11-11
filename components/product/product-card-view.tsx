@@ -6,6 +6,7 @@ import type { ProductSummary } from "@/lib/shopify/types";
 import { cn } from "@/lib/utils";
 import type { ProductCardStyle } from "@/themes/types";
 import { Price } from "./price";
+import { QuickAddButton } from "./quick-add-button";
 import { QuickViewButton } from "./quick-view";
 import { Rating } from "./rating";
 import { WishlistButton } from "./wishlist-button";
@@ -36,6 +37,8 @@ export interface ProductCardLook {
   wishlist: boolean;
   quickView: boolean;
   reviews: boolean;
+  /** Show an add-to-bag button under the price. Set per homepage section. */
+  quickAdd?: { label: string } | null;
 }
 
 interface ProductCardViewProps {
@@ -59,7 +62,7 @@ export function ProductCardView({
   const still = look.animation === "none";
 
   return (
-    <article className="group relative flex flex-col">
+    <article className="group relative flex h-full flex-col">
       <div className="relative">
         <ShopImage
           src={product.featuredImage?.url}
@@ -93,7 +96,7 @@ export function ProductCardView({
         ) : null}
       </div>
 
-      <div className={cn("flex flex-col", style.body)}>
+      <div className={cn("flex flex-1 flex-col", style.body)}>
         {style.vendor && product.vendor ? <p className="type-caption text-muted">{product.vendor}</p> : null}
         <h3 className={style.title}>
           {/* The stretched link makes the whole card clickable with one tab stop. */}
@@ -105,12 +108,19 @@ export function ProductCardView({
           </Link>
         </h3>
         {look.reviews ? <Rating rating={product.rating} /> : null}
-        <Price
-          price={product.price}
-          compareAtPrice={product.compareAtPrice}
-          from={product.hasPriceRange}
-          locale={look.locale}
-        />
+        {look.quickAdd ? (
+          <div className="mt-auto flex flex-col items-stretch gap-2 pt-1 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+            <Price price={product.price} compareAtPrice={product.compareAtPrice} from={product.hasPriceRange} locale={look.locale} />
+            <QuickAddButton product={product} label={look.quickAdd.label} />
+          </div>
+        ) : (
+          <Price
+            price={product.price}
+            compareAtPrice={product.compareAtPrice}
+            from={product.hasPriceRange}
+            locale={look.locale}
+          />
+        )}
       </div>
     </article>
   );

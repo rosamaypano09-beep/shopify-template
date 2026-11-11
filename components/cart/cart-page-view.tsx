@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useHydrated } from "@/lib/use-hydrated";
-import { CartLineItem, CartTotals, CheckoutButton, DiscountCodes, FreeShippingBar } from "./cart-contents";
+import { CartLineItem, CartNote, CartSchedule, CartTotals, CheckoutButton, DiscountCodes, FreeShippingBar } from "./cart-contents";
 import { useCart } from "./cart-provider";
 
 export function CartPageView() {
@@ -57,7 +57,9 @@ export function CartPageView() {
             {error}
           </p>
         ) : null}
+        <CartSchedule cart={cart} />
         <CartTotals cart={cart} />
+        <CartNote />
         <CheckoutButton cart={cart} />
       </aside>
     </div>

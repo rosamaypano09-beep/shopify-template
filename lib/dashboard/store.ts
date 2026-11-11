@@ -11,10 +11,10 @@ const FILE_PATH = "config/site.json";
 const asObject = (value: unknown): Overrides =>
   value && typeof value === "object" && !Array.isArray(value) ? (value as Overrides) : {};
 
-async function github(method: "GET" | "PUT", body?: unknown) {
+async function github(method: "GET" | "PUT", body?: unknown, filePath = FILE_PATH) {
   const target = githubTarget();
   if (!target) throw new Error("GitHub is not configured.");
-  const url = `https://api.github.com/repos/${target.repo}/contents/${FILE_PATH}${method === "GET" ? `?ref=${encodeURIComponent(target.branch)}` : ""}`;
+  const url = `https://api.github.com/repos/${target.repo}/contents/${filePath}${method === "GET" ? `?ref=${encodeURIComponent(target.branch)}` : ""}`;
   return fetch(url, {
     method,
     headers: {
@@ -67,4 +67,27 @@ export async function writeOverrides(next: Overrides): Promise<string> {
   }
   await fs.writeFile(path.join(process.cwd(), FILE_PATH), text, "utf8");
   return "Saved. The store preview updates in a moment.";
+}
+
+/**
+ * Adds a new binary file to the project (an uploaded image under public/).
+ * Locally it is written to disk; on the live site it is committed to GitHub
+ * and appears once the site has redeployed. Never overwrites an existing file.
+ */
+export async function writeNewProjectFile(relativePath: string, content: Buffer): Promise<string> {
+  if (storageKind() === "github") {
+    const existing = await github("GET", undefined, relativePath);
+    if (existing.ok) throw new Error("A file with that name already exists.");
+    const response = await github(
+      "PUT",
+      { message: `Upload ${relativePath} from the dashboard`, content: content.toString("base64"), branch: githubTarget()?.branch },
+      relativePath,
+    );
+    if (!response.ok) throw new Error(`GitHub responded with ${response.status} while uploading.`);
+    return "Uploaded. The image shows on the live site in about a minute, once it has redeployed.";
+  }
+  const target = path.join(process.cwd(), relativePath);
+  await fs.mkdir(path.dirname(target), { recursive: true });
+  await fs.writeFile(target, content, { flag: "wx" });
+  return "Uploaded.";
 }

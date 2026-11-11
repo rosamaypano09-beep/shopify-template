@@ -48,6 +48,8 @@ export interface ProductSummary {
   compareAtPrice: Money | null;
   /** Average rating from the store's review app, when it publishes one. */
   rating: ProductRating | null;
+  /** The variant a card can add straight to the cart: set only when the product has exactly one, and it is for sale. */
+  quickAddVariantId: string | null;
 }
 
 export interface ProductRating {
@@ -147,6 +149,28 @@ export interface CatalogSource {
   getRecommendations(productId: string): Promise<ProductSummary[]>;
   search(query: string, options?: SearchOptions): Promise<SearchResult>;
   predictiveSearch(query: string): Promise<PredictiveSearchResult>;
+  /** A blog and a page of its newest articles, or null when it does not exist. */
+  /** `tag` keeps only articles with that tag. */
+  getBlog(handle: string, options?: BlogOptions): Promise<Blog | null>;
+  getArticle(blogHandle: string, articleHandle: string): Promise<Article | null>;
+  /** A page written in Shopify admin (Online Store > Pages). */
+  getPage(handle: string): Promise<ShopPage | null>;
+  /** A menu from Shopify admin (Online Store > Navigation). Empty when it does not exist. */
+  getMenu(handle: string): Promise<ShopMenuItem[]>;
+  /** Titles and handles of published pages and blogs, for link pickers. */
+  listContent(): Promise<ContentIndex>;
+}
+
+export interface BlogOptions {
+  first?: number;
+  after?: string | null;
+  tag?: string | null;
+}
+
+export interface ContentIndex {
+  pages: { handle: string; title: string }[];
+  blogs: { handle: string; title: string }[];
+  articles: { handle: string; title: string; blogHandle: string }[];
 }
 
 export interface ShopPolicy {
@@ -154,6 +178,58 @@ export interface ShopPolicy {
   title: string;
   /** HTML written by the merchant. Always sanitized before display. */
   body: string;
+}
+
+/* ---------- Content (Online Store > Blog posts, Pages, Navigation) ---------- */
+
+export interface ArticleSummary {
+  id: string;
+  handle: string;
+  /** Handle of the blog the article belongs to, for building its URL. */
+  blogHandle: string;
+  title: string;
+  /** Plain text. */
+  excerpt: string;
+  publishedAt: string;
+  image: ShopImage | null;
+  author: string | null;
+  tags: string[];
+}
+
+export interface Article extends ArticleSummary {
+  /** HTML written by the merchant. Always sanitized before display. */
+  contentHtml: string;
+  /** The Excerpt field exactly as written in Shopify, without the fallback. Shown under the title. */
+  standfirst: string;
+  seo: { title: string | null; description: string | null };
+}
+
+export interface Blog {
+  id: string;
+  handle: string;
+  title: string;
+  seo: { title: string | null; description: string | null };
+  articles: ArticleSummary[];
+  pageInfo: PageInfo;
+}
+
+export interface ShopPage {
+  id: string;
+  handle: string;
+  title: string;
+  /** HTML written by the merchant. Always sanitized before display. */
+  body: string;
+  bodySummary: string;
+  seo: { title: string | null; description: string | null };
+  updatedAt: string;
+}
+
+/** One entry of a Shopify navigation menu, with its URL already turned into a storefront path. */
+export interface ShopMenuItem {
+  title: string;
+  href: string;
+  external: boolean;
+  items: ShopMenuItem[];
 }
 
 /* ---------- Cart ---------- */
@@ -171,6 +247,13 @@ export interface CartLine {
   compareAtUnitPrice: Money | null;
   totalPrice: Money;
   availableForSale: boolean;
+  /** Notes stored on the line, for example the flavours chosen for a bundle. They travel to the order. */
+  attributes: CartLineAttribute[];
+}
+
+export interface CartLineAttribute {
+  key: string;
+  value: string;
 }
 
 export interface Cart {
@@ -184,11 +267,14 @@ export interface Cart {
   /** What Shopify currently expects the customer to pay, before shipping. */
   total: Money;
   discountCodes: { code: string; applicable: boolean }[];
+  /** Notes on the whole order, for example the chosen pickup date and time. */
+  attributes: CartLineAttribute[];
 }
 
 export interface CartLineInput {
   merchandiseId: string;
   quantity: number;
+  attributes?: CartLineAttribute[];
 }
 
 /** Cart operations. Implemented by cart-live.ts and mock/cart.ts. */
@@ -199,4 +285,6 @@ export interface CartSource {
   updateLines(cartId: string, lines: { id: string; quantity: number }[]): Promise<Cart>;
   removeLines(cartId: string, lineIds: string[]): Promise<Cart>;
   updateDiscountCodes(cartId: string, codes: string[]): Promise<Cart>;
+  /** Replaces the order notes. They reach the order (Shopify admin: Additional details). */
+  updateAttributes(cartId: string, attributes: CartLineAttribute[]): Promise<Cart>;
 }

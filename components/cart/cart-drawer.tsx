@@ -8,7 +8,7 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { track } from "@/lib/analytics";
 import { useHydrated } from "@/lib/use-hydrated";
-import { CartLineItem, CartTotals, CheckoutButton, FreeShippingBar } from "./cart-contents";
+import { CartLineItem, CartNote, CartSchedule, CartTotals, CheckoutButton, FreeShippingBar } from "./cart-contents";
 import { useCart } from "./cart-provider";
 
 /** Header cart button with the item count. Opens the drawer. */
@@ -39,7 +39,7 @@ export function CartButton() {
 }
 
 export function CartDrawer() {
-  const { cart, status, error, isDrawerOpen, openDrawer, closeDrawer } = useCart();
+  const { cart, status, error, isDrawerOpen, openDrawer, closeDrawer, settings } = useCart();
   const hasItems = Boolean(cart?.lines.length);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export function CartDrawer() {
 
   return (
     <Sheet open={isDrawerOpen} onOpenChange={(open) => (open ? openDrawer() : closeDrawer())}>
-      <SheetContent title="Your cart" side="right" className="w-[min(28rem,100vw)]">
+      <SheetContent title={settings.ordering?.cartTitle || "Your cart"} side="right" className="w-[min(28rem,100vw)]">
         {status === "loading" ? (
           <div className="flex flex-col gap-5 p-5" role="status" aria-label="Loading your cart">
             <Skeleton className="h-24" />
@@ -78,7 +78,9 @@ export function CartDrawer() {
                   {error}
                 </p>
               ) : null}
+              <CartSchedule cart={cart} />
               <CartTotals cart={cart} />
+              <CartNote />
               <CheckoutButton cart={cart} />
               <Button asChild variant="link" className="min-h-11 self-center">
                 <Link href="/cart" onClick={closeDrawer}>

@@ -183,6 +183,7 @@ function buildProduct(seed: ProductSeed): Product {
     compareAtPrice: cheapest.compareAt ? php(cheapest.compareAt) : null,
     // The demo has no review app, so it shows no ratings. Invented reviews would be dishonest.
     rating: null,
+    quickAddVariantId: variants.length === 1 && variants[0].availableForSale ? variants[0].id : null,
     description: seed.description,
     productType: seed.productType,
     images: image ? [image] : [],

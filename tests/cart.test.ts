@@ -118,3 +118,21 @@ describe("normalizeCart (live Shopify shape)", () => {
     expect(normalized.total.amount).toBe("1617.3");
   });
 });
+
+describe("cart line notes (bundle flavours)", () => {
+  it("keeps the same product with different notes on separate lines, and can update and remove each", async () => {
+    const { mockCartSource } = await import("@/lib/shopify/mock/cart");
+    const { mockProducts } = await import("@/lib/shopify/mock/catalog");
+    const variant = mockProducts.flatMap((p) => p.variants).find((v) => v.availableForSale)!;
+    let cart = await mockCartSource.createCart([{ merchandiseId: variant.id, quantity: 1, attributes: [{ key: "Flavours", value: "Ube ×2, Buko ×1" }] }]);
+    cart = await mockCartSource.addLines(cart.id, [{ merchandiseId: variant.id, quantity: 1, attributes: [{ key: "Flavours", value: "Buko ×3" }] }]);
+    cart = await mockCartSource.addLines(cart.id, [{ merchandiseId: variant.id, quantity: 1, attributes: [{ key: "Flavours", value: "Buko ×3" }] }]);
+    expect(cart.lines).toHaveLength(2);
+    const buko = cart.lines.find((line) => line.attributes[0]?.value === "Buko ×3")!;
+    expect(buko.quantity).toBe(2);
+    cart = await mockCartSource.updateLines(cart.id, [{ id: buko.id, quantity: 5 }]);
+    expect(cart.lines.find((line) => line.id === buko.id)?.quantity).toBe(5);
+    cart = await mockCartSource.removeLines(cart.id, [buko.id]);
+    expect(cart.lines.map((line) => line.attributes[0]?.value)).toEqual(["Ube ×2, Buko ×1"]);
+  });
+});

@@ -6,7 +6,9 @@ import { cn } from "@/lib/utils";
 
 export const buttonVariants = cva(
   [
-    "type-button relative inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-control",
+    // Text always stays inside: long labels wrap onto a second line (balanced) and the button grows taller.
+    "type-button relative inline-flex max-w-full min-w-0 items-center justify-center gap-2 rounded-control text-center leading-tight text-balance [overflow-wrap:anywhere]",
+    "[&>svg]:shrink-0",
     "transition-[background-color,color,border-color,transform,box-shadow] duration-(--ce-motion-fast) ease-brand",
     "active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50",
     "aria-disabled:pointer-events-none aria-disabled:opacity-50",
@@ -22,13 +24,13 @@ export const buttonVariants = cva(
         link: "h-auto rounded-none p-0 text-foreground underline decoration-1 underline-offset-4 hover:decoration-2",
       },
       size: {
-        sm: "h-10 px-4 text-sm",
-        md: "h-12 px-6",
-        lg: "h-14 px-8 text-base",
+        sm: "min-h-10 px-4 py-2 text-sm",
+        md: "min-h-12 px-6 py-2.5",
+        lg: "min-h-12 px-5 py-3 text-[0.9375rem] sm:min-h-14 sm:px-8 sm:text-base",
         icon: "size-11 p-0",
       },
     },
-    compoundVariants: [{ variant: "link", class: "h-auto px-0" }],
+    compoundVariants: [{ variant: "link", class: "min-h-0 px-0 py-0 text-left" }],
     defaultVariants: { variant: "primary", size: "md" },
   },
 );

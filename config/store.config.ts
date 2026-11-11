@@ -31,4 +31,18 @@ export const storeConfig: StoreConfig = {
   promotions: {
     freeShippingThreshold: 1500,
   },
+
+  ordering: {
+    cartTitle: "Your cart",
+    // Off until the store's real days, cut-off and time slots are filled in (dashboard: Store details).
+    scheduling: false,
+    dateLabel: "Pickup or delivery date",
+    timeLabel: "Time",
+    openDays: [1, 2, 3, 4, 5, 6],
+    cutoffHour: 16,
+    minDaysAhead: 1,
+    maxDaysAhead: 30,
+    timeSlots: [],
+    closedDates: [],
+  },
 };

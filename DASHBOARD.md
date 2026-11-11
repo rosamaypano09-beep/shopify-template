@@ -44,14 +44,31 @@ This login and the GitHub saving were tested on a local server. The GitHub step 
 | Overview | Nothing. Shows the Shopify connection, product and collection counts, and a list of things to fix: links to collections that do not exist, homepage sections pointing at missing collections, products without photos, placeholder contact details, SEO gaps |
 | Branding | One of eight presets, eleven colours, product card style, product image shape, animation level, footer style |
 | Store details | Name, description, email, phone, social links, free-shipping amount |
-| Homepage | Add, edit, reorder, duplicate, hide and delete sections: hero, benefits, collection tiles, products, brand statement, image with text, testimonials, logo row (trusted by), questions, newsletter |
-| Shopify | Links that open the right Shopify admin screen: add a product, collection or discount, blog posts, files, policies, orders |
-| Navigation | Announcement bar, top menu items, header options |
+| Homepage | Add, edit, reorder, duplicate, hide and delete sections from a catalogue of 14: hero (three layouts), trust strip, story (image with text and cards), feature band, pick your favourite (one product with option buttons and add to bag), product grid (filter tabs, cards per row, Add to bag buttons), collection tiles, benefits, press / logo row, testimonials, questions (stacked or split), blog posts, brand statement, newsletter. Every section has a Look group: background, shape, spacing, heading alignment. **Live preview** shows unsaved changes beside the editor at desktop, tablet and phone widths. Product, collection and blog fields suggest what exists in Shopify. Image fields show a preview, a library of every image in `public/`, and an Upload button |
+| Shopify | What the site currently reads from Shopify (blogs, header menu), and links that open the right Shopify admin screen: add a product, collection or discount, blog posts, pages, menus, files, policies, orders |
+| Navigation | Announcement bar and its link; menu source (this dashboard, or a live Shopify menu); the top menu with dropdown columns, links and a promo tile with image; Import from Shopify menu; menu position, link style, uppercase, View all links; header options. Every link field suggests your pages, collections, Shopify pages, blogs, products and policies as you type |
 | SEO | Homepage title and description, title pattern |
 | Features | Every feature switch |
 | Preview | The real storefront at 1280, 768 and 390 pixels wide |
 
 Press **Ctrl K** (or Cmd K) anywhere to search settings. The moon icon switches light and dark mode; it affects the dashboard only.
+
+## Live preview
+
+Press **Live preview** in the Homepage screen. Unsaved edits appear beside the editor about half a second after you stop typing, rendered with the real storefront and real Shopify data; opening a section scrolls the preview to it. Nothing is published until you press Save homepage. Drafts are kept in the server's temporary folder only. On the live site, a host running several server copies can occasionally miss a draft; the preview then keeps the last version it showed.
+
+## Images
+
+Image fields (hero photo, image with text) show the picture, open a library of every image under `public/`, and upload new ones. Uploads accept PNG, JPG, WebP, AVIF and GIF up to 4 MB and are stored in `public/uploads/`. On your computer the file is written straight away. On the live site it is committed to GitHub like a settings save, so it shows about a minute later, after the redeploy. Save the section after choosing or uploading an image.
+
+## Shopify content
+
+- **Blog posts** written in Shopify (Online Store > Blog posts) appear at `/blogs/<blog>` (newest post large, topic filters from the posts' tags) and `/blogs/<blog>/<post>` (reading time, tags, more posts), and in a "Blog posts" homepage section with grid, featured or list layouts. A post without an Excerpt shows the start of its text instead. Link fields suggest your posts too.
+- **Shopify page** homepage section shows a page written in Shopify, whole or as an excerpt with Read more.
+- **Pages** written in Shopify (Online Store > Pages) appear at `/pages/<handle>`.
+- **Menus**: set Navigation > Menu source to "A Shopify menu" to use a Shopify menu (default `main-menu`) as the header menu. Nested items become dropdown columns.
+
+Blog posts and pages need to be published, and visible to the Headless sales channel. Changes appear within a few minutes; **Refresh from Shopify** (Homepage and Shopify screens) shows them at once.
 
 ## How saving works
 
@@ -66,11 +83,12 @@ Press **Ctrl K** (or Cmd K) anywhere to search settings. The moon icon switches 
 | --- | --- |
 | Logo and favicon files | `config/store.config.ts`, `public/brand/` |
 | Fonts | `config/fonts.ts` |
-| Dropdown menu columns and footer menu | `config/navigation.config.ts` |
+| Footer menu | `config/navigation.config.ts` |
 | About, FAQ and contact page text | `config/pages.config.ts` |
 | Address and business hours | `config/store.config.ts` |
 | Social sharing image | `config/seo.config.ts` |
 | Tracking ids | environment variables (see FEATURES.md) |
+| Admin API access for order counts | `SHOPIFY_ADMIN_CLIENT_ID`, `SHOPIFY_ADMIN_CLIENT_SECRET` (see `.env.example`) |
 
 ## Troubleshooting
 

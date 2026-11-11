@@ -8,7 +8,7 @@ export function AnnouncementBar({ announcement }: { announcement: NavigationConf
     <div className="bg-accent text-accent-foreground">
       <p className="container-site type-small flex min-h-10 flex-wrap items-center justify-center gap-x-3 py-2 text-center font-medium">
         <span>{announcement.message}</span>
-        {announcement.link ? (
+        {announcement.link?.label?.trim() && announcement.link.href?.trim() ? (
           <SiteLink
             href={announcement.link.href}
             external={announcement.link.external}

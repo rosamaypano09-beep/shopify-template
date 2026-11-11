@@ -15,6 +15,7 @@ function toSummary(product: Product): ProductSummary {
     hasPriceRange: product.hasPriceRange,
     compareAtPrice: product.compareAtPrice,
     rating: product.rating,
+    quickAddVariantId: product.quickAddVariantId,
   };
 }
 
@@ -215,5 +216,26 @@ export const mockSource: CatalogSource = {
         .map(({ id, handle, title }) => ({ id, handle, title })),
       suggestions: [...words].slice(0, 4),
     };
+  },
+
+  // The demo catalog has no blog, pages or Shopify menus: that content must come from the real store.
+  async getBlog() {
+    return null;
+  },
+
+  async getArticle() {
+    return null;
+  },
+
+  async getPage() {
+    return null;
+  },
+
+  async getMenu() {
+    return [];
+  },
+
+  async listContent() {
+    return { pages: [], blogs: [], articles: [] };
   },
 };

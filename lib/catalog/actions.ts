@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { logger } from "@/lib/logger";
+import { quickAddVariant } from "@/lib/shopify/normalize";
 import { getProduct } from "@/lib/shopify/products";
 import type { Product, ProductSummary } from "@/lib/shopify/types";
 
@@ -23,6 +24,7 @@ function toSummary(product: Product): ProductSummary {
     hasPriceRange: product.hasPriceRange,
     compareAtPrice: product.compareAtPrice,
     rating: product.rating,
+    quickAddVariantId: quickAddVariant(product.variants),
   };
 }
 

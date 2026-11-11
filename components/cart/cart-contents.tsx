@@ -1,6 +1,6 @@
 "use client";
 
-import { LoaderCircle, Minus, Plus, X } from "lucide-react";
+import { ArrowRight, CalendarDays, Check, LoaderCircle, Minus, Plus, X } from "lucide-react";
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -10,7 +10,8 @@ import { track } from "@/lib/analytics";
 import { formatMoney } from "@/lib/format";
 import type { Cart, CartLine } from "@/lib/shopify/types";
 import { cn } from "@/lib/utils";
-import { useCart } from "./cart-provider";
+import { availableDates, formatScheduleDate, isAllowedChoice, SCHEDULE_DATE_KEY } from "@/lib/ordering/schedule";
+import { useCart, type CartSettings } from "./cart-provider";
 
 /** Shared by the cart drawer and the cart page. */
 
@@ -77,6 +78,12 @@ export function CartLineItem({ line, onNavigate }: { line: CartLine; onNavigate?
               {line.productTitle}
             </Link>
             {line.variantTitle ? <p className="type-small text-muted">{line.variantTitle}</p> : null}
+            {line.attributes.map((attribute) => (
+              <p key={attribute.key} className="type-small text-muted">
+                <span className="sr-only">{attribute.key}: </span>
+                {attribute.value}
+              </p>
+            ))}
             {!line.availableForSale ? (
               <p className="type-small font-medium text-danger">No longer available. Remove it to check out.</p>
             ) : null}
@@ -114,7 +121,7 @@ export function CartLineItem({ line, onNavigate }: { line: CartLine; onNavigate?
           />
           <p className="text-right tabular-nums">
             <span className="font-semibold">{formatMoney(line.totalPrice, settings.locale)}</span>
-            {line.quantity > 1 ? (
+            {line.quantity > 1 || line.attributes.length ? (
               <span className="type-caption block text-muted">
                 {formatMoney(line.unitPrice, settings.locale)} each
               </span>
@@ -244,7 +251,9 @@ export function CartTotals({ cart }: { cart: Cart }) {
 /** Hands the cart to Shopify's hosted checkout. Payment never touches this site. */
 export function CheckoutButton({ cart }: { cart: Cart }) {
   const [leaving, setLeaving] = useState(false);
+  const { settings } = useCart();
   const blocked = cart.lines.some((line) => !line.availableForSale);
+  const needsSchedule = scheduleState(cart, settings) !== "ok";
 
   if (!cart.checkoutUrl) {
     return (
@@ -259,6 +268,14 @@ export function CheckoutButton({ cart }: { cart: Cart }) {
     return (
       <Button size="lg" className="w-full" disabled>
         Remove unavailable items to check out
+      </Button>
+    );
+  }
+
+  if (needsSchedule) {
+    return (
+      <Button size="lg" className="w-full" disabled>
+        Choose a {settings.ordering?.dateLabel.toLowerCase() ?? "date"} to check out
       </Button>
     );
   }
@@ -284,8 +301,96 @@ export function CheckoutButton({ cart }: { cart: Cart }) {
           Opening secure checkout
         </>
       ) : (
-        "Check out"
+        <>
+          Check out <ArrowRight aria-hidden className="size-4" />
+        </>
       )}
     </a>
+  );
+}
+
+
+/** Whether the bag still needs a date and time: "off" (not asked), "ok", "missing" or "expired". */
+export function scheduleState(cart: Cart, settings: CartSettings): "off" | "ok" | "missing" | "expired" {
+  const ordering = settings.ordering;
+  if (!ordering?.scheduling || !ordering.timeSlots.length) return "ok";
+  const date = cart.attributes.find((attribute) => attribute.key === SCHEDULE_DATE_KEY)?.value;
+  const time = cart.attributes.find((attribute) => attribute.key === ordering.timeLabel)?.value;
+  if (!date || !time) return "missing";
+  return isAllowedChoice(new Date(), settings.timeZone, ordering, date, time) ? "ok" : "expired";
+}
+
+/** The store's notice above the checkout button, for example the order cut-off. */
+export function CartNote() {
+  const { settings } = useCart();
+  const note = settings.ordering?.cartNote?.trim();
+  if (!note) return null;
+  return <p className="type-small rounded-md bg-primary/8 px-4 py-3 text-muted">{note}</p>;
+}
+
+/**
+ * Pickup or delivery date and time, chosen in the bag and saved on the order.
+ * Only dates the store's rules allow are offered (open days, cut-off, closed
+ * dates, in the store's time zone); the server checks the choice again.
+ */
+export function CartSchedule({ cart }: { cart: Cart }) {
+  const { settings, setSchedule, pending } = useCart();
+  const ordering = settings.ordering;
+  const savedDate = cart.attributes.find((attribute) => attribute.key === SCHEDULE_DATE_KEY)?.value ?? null;
+  const savedTime = ordering ? (cart.attributes.find((attribute) => attribute.key === ordering.timeLabel)?.value ?? null) : null;
+  const [date, setDate] = useState<string | null>(savedDate);
+  const [time, setTime] = useState<string | null>(savedTime);
+  if (!ordering?.scheduling || !ordering.timeSlots.length) return null;
+
+  const dates = availableDates(new Date(), settings.timeZone, ordering);
+  const state = scheduleState(cart, settings);
+  const saving = pending.has("schedule");
+  const chip = (active: boolean) =>
+    cn(
+      "inline-flex min-h-11 shrink-0 flex-col items-center justify-center rounded-md border px-3 py-1.5 text-center text-sm transition-colors",
+      active ? "border-primary bg-primary text-primary-foreground" : "border-border hover:border-foreground/50",
+    );
+  const choose = (nextDate: string | null, nextTime: string | null) => {
+    setDate(nextDate);
+    setTime(nextTime);
+    if (nextDate && nextTime && (nextDate !== savedDate || nextTime !== savedTime)) void setSchedule(nextDate, nextTime);
+  };
+
+  return (
+    <fieldset className="flex min-w-0 flex-col gap-3" aria-busy={saving || undefined}>
+      <legend className="mb-1 flex w-full items-center justify-between gap-2 text-sm font-semibold">
+        <span className="inline-flex items-center gap-2">
+          <CalendarDays aria-hidden className="size-4 text-highlight" /> {ordering.dateLabel}
+        </span>
+        {saving ? <LoaderCircle aria-hidden className="size-4 animate-spin text-muted" /> : state === "ok" ? <Check aria-hidden className="size-4 text-success" /> : null}
+      </legend>
+      {state === "expired" ? (
+        <p role="alert" className="type-small font-medium text-danger">
+          Your chosen date is no longer available. Please choose another.
+        </p>
+      ) : null}
+      {dates.length ? (
+        <div role="radiogroup" aria-label={ordering.dateLabel} className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+          {dates.map((value) => {
+            const [weekday, ...rest] = formatScheduleDate(value, settings.locale, "short").split(/,?\s+/);
+            return (
+              <button key={value} type="button" role="radio" aria-checked={date === value} aria-label={formatScheduleDate(value, settings.locale)} onClick={() => choose(value, time)} className={chip(date === value)}>
+                <span className="text-[0.6875rem] font-semibold tracking-wide uppercase opacity-80">{weekday}</span>
+                <span className="font-semibold whitespace-nowrap">{rest.join(" ")}</span>
+              </button>
+            );
+          })}
+        </div>
+      ) : (
+        <p className="type-small text-muted">No dates are open right now. Please check back soon.</p>
+      )}
+      <div role="radiogroup" aria-label={ordering.timeLabel} className="flex flex-wrap gap-2">
+        {ordering.timeSlots.map((slot) => (
+          <button key={slot} type="button" role="radio" aria-checked={time === slot} disabled={!date} onClick={() => choose(date, slot)} className={cn(chip(time === slot), "flex-row disabled:opacity-40")}>
+            {slot}
+          </button>
+        ))}
+      </div>
+    </fieldset>
   );
 }

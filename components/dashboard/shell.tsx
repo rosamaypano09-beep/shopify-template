@@ -268,7 +268,7 @@ export function DashboardShell({
             You are editing the live site. Each save is published in about a minute.
           </p>
         ) : null}
-        <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8 sm:px-8">{children}</main>
+        <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8 sm:px-8 has-[[data-wide]]:max-w-none">{children}</main>
       </div>
 
       <CommandPalette open={paletteOpen} mode={mode} onOpenChange={setPaletteOpen} onToggleMode={toggleMode} />

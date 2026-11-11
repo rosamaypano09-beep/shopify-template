@@ -65,7 +65,7 @@ describe("theme presets", () => {
     for (const preset of Object.values(presets)) {
       expect(Object.keys(themeToCssVars(preset)).sort(), preset.id).toEqual(keys);
     }
-    expect(Object.keys(presets).length).toBe(8);
+    expect(Object.keys(presets).length).toBe(9);
   });
 
   it("keep text readable on its background (contrast 4.5 or higher)", () => {

@@ -1,10 +1,11 @@
 "use client";
 
-import { Menu } from "lucide-react";
+import { ArrowRight, Menu } from "lucide-react";
 import { useState } from "react";
 import type { NavItem, NavLink } from "@/config";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { ShopImage } from "@/components/ui/shop-image";
 import { SiteLink } from "@/components/ui/site-link";
 import { cn } from "@/lib/utils";
 
@@ -12,10 +13,12 @@ interface MobileMenuProps {
   items: NavItem[];
   /** Account, wishlist, search and similar, shown under the main items. */
   utilityLinks: NavLink[];
+  /** Add a "View all" link to each dropdown. */
+  viewAll?: boolean;
   className?: string;
 }
 
-export function MobileMenu({ items, utilityLinks, className }: MobileMenuProps) {
+export function MobileMenu({ items, utilityLinks, viewAll = true, className }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
 
@@ -39,8 +42,8 @@ export function MobileMenu({ items, utilityLinks, className }: MobileMenuProps) 
                 <AccordionItem key={item.label} value={item.label}>
                   <AccordionTrigger className="type-h3">{item.label}</AccordionTrigger>
                   <AccordionContent className="flex flex-col gap-5">
-                    {item.groups.map((group) => (
-                      <div key={group.title}>
+                    {item.groups.map((group, groupIndex) => (
+                      <div key={`${group.title}-${groupIndex}`}>
                         <p className="type-small mb-1 text-muted">{group.title}</p>
                         <ul>
                           {group.links.map((link) => (
@@ -58,6 +61,22 @@ export function MobileMenu({ items, utilityLinks, className }: MobileMenuProps) 
                         </ul>
                       </div>
                     ))}
+                    {viewAll && item.href && item.href !== "/" ? (
+                      <SiteLink href={item.href} external={item.external} onClick={close} className="inline-flex min-h-11 items-center gap-1.5 font-semibold">
+                        View all {item.label} <ArrowRight aria-hidden className="size-4" />
+                      </SiteLink>
+                    ) : null}
+                    {item.feature ? (
+                      <SiteLink href={item.feature.href} onClick={close} className="flex items-center gap-4 rounded-lg bg-surface p-3">
+                        {item.feature.image ? (
+                          <ShopImage src={item.feature.image} alt="" sizes="96px" className="w-24 shrink-0 rounded-md" />
+                        ) : null}
+                        <span className="flex flex-col gap-1">
+                          <span className="font-semibold">{item.feature.title}</span>
+                          {item.feature.ctaLabel ? <span className="type-small text-highlight">{item.feature.ctaLabel}</span> : null}
+                        </span>
+                      </SiteLink>
+                    ) : null}
                   </AccordionContent>
                 </AccordionItem>
               ) : (

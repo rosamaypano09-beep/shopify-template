@@ -8,6 +8,8 @@ import type { PagesConfig } from "./types";
 export const pagesConfig: PagesConfig = {
   about: {
     enabled: true,
+    // Shown at /about. Edit it in Shopify admin > Online Store > Pages > About Us.
+    shopifyPage: "about-us",
     title: "Why we started Bantay Daily",
     intro:
       "We are dog owners who got tired of reading supplement labels that listed everything except the amounts.",

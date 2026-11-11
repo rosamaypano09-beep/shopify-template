@@ -1,5 +1,6 @@
 "use client";
 
+import type { OrderingConfig } from "@/config/types";
 import {
   createContext,
   startTransition,
@@ -13,6 +14,7 @@ import {
 } from "react";
 import {
   addToCartAction,
+  setOrderScheduleAction,
   getCartAction,
   removeCartLineAction,
   setDiscountCodesAction,
@@ -29,6 +31,10 @@ export interface CartSettings {
   freeShippingThreshold: number | null;
   /** The threshold only makes sense in the store's own currency. */
   currency: string;
+  /** Bag title, notice and date/time rules (store.ordering). */
+  ordering: OrderingConfig | null;
+  /** The store's time zone, for working out which dates can be chosen. */
+  timeZone: string;
 }
 
 interface CartContextValue {
@@ -43,7 +49,9 @@ interface CartContextValue {
   isDrawerOpen: boolean;
   openDrawer: () => void;
   closeDrawer: () => void;
-  add: (merchandiseId: string, quantity: number) => Promise<boolean>;
+  add: (merchandiseId: string, quantity: number, attributes?: { key: string; value: string }[]) => Promise<boolean>;
+  /** Saves the pickup or delivery date (YYYY-MM-DD) and time on the order. */
+  setSchedule: (date: string, time: string) => Promise<boolean>;
   update: (lineId: string, quantity: number) => Promise<boolean>;
   remove: (lineId: string) => Promise<boolean>;
   setDiscountCodes: (codes: string[]) => Promise<boolean>;
@@ -119,14 +127,15 @@ export function CartProvider({ settings, children }: { settings: CartSettings; c
       isDrawerOpen,
       openDrawer: () => setDrawerOpen(true),
       closeDrawer: () => setDrawerOpen(false),
-      add: async (merchandiseId, quantity) => {
-        const ok = await run("add", () => addToCartAction({ merchandiseId, quantity }));
+      add: async (merchandiseId, quantity, attributes) => {
+        const ok = await run("add", () => addToCartAction({ merchandiseId, quantity, attributes }));
         if (ok && settings.openDrawerOnAdd) setDrawerOpen(true);
         return ok;
       },
       update: (lineId, quantity) => run(lineId, () => updateCartLineAction({ lineId, quantity })),
       remove: (lineId) => run(lineId, () => removeCartLineAction(lineId)),
       setDiscountCodes: (codes) => run("discount", () => setDiscountCodesAction(codes)),
+      setSchedule: (date, time) => run("schedule", () => setOrderScheduleAction({ date, time })),
     }),
     [cart, status, pending, error, settings, isDrawerOpen, run],
   );

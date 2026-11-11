@@ -39,6 +39,13 @@ export const PRODUCT_SUMMARY_FRAGMENT = /* GraphQL */ `
         currencyCode
       }
     }
+    # Two are enough to tell "exactly one variant" (can be added from a card) from "choose one".
+    quickVariants: variants(first: 2) {
+      nodes {
+        id
+        availableForSale
+      }
+    }
     # Shopify's standard review metafields. Review apps (Judge.me, Loox, Yotpo...) fill these in.
     rating: metafield(namespace: "reviews", key: "rating") {
       value

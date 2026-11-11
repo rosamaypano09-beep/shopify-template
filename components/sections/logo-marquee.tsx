@@ -17,7 +17,7 @@ function Logo({ item }: { item: Item }) {
       className="h-10 w-auto max-w-40 object-contain opacity-80 grayscale transition hover:opacity-100 hover:grayscale-0"
     />
   ) : (
-    <span className="type-h4 whitespace-nowrap opacity-75">{item.name}</span>
+    <span className={cn("type-h4 whitespace-nowrap", item.highlight ? "text-highlight lowercase italic" : "opacity-75")}>{item.name}</span>
   );
   return item.href ? (
     <SiteLink href={item.href} aria-label={item.logo ? item.name : undefined} className="inline-flex min-h-11 items-center">
@@ -38,8 +38,29 @@ export function LogoMarquee({ config }: { config: LogoMarqueeSectionConfig }) {
   if (!items.length) return null;
   const row = "flex shrink-0 items-center gap-x-14 pr-14";
 
+  if (config.layout === "card") {
+    return (
+      <Section config={config} compact>
+        <div className="mx-auto flex max-w-2xl flex-col items-center gap-5 rounded-lg border border-border bg-surface px-5 py-7 text-center shadow-lg sm:px-10 sm:py-8">
+          {config.title ? <p className="type-caption font-semibold tracking-[0.18em] text-highlight uppercase">{config.title}</p> : null}
+          <ul className="flex flex-col items-center gap-y-2 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-x-8 sm:gap-y-4">
+            {items.map((item, index) => (
+              <li key={item.name} className="flex items-center gap-8">
+                {index ? <span aria-hidden className="size-1 rounded-full bg-primary max-sm:hidden" /> : null}
+                <span className={cn("[&_.type-h4]:opacity-100", !item.highlight && "[&_.type-h4]:uppercase")}>
+                  <Logo item={item} />
+                </span>
+              </li>
+            ))}
+          </ul>
+          {config.description ? <p className="type-small max-w-[52ch] text-muted">{config.description}</p> : null}
+        </div>
+      </Section>
+    );
+  }
+
   return (
-    <Section id={config.id} background={config.background} compact>
+    <Section config={config} compact>
       {config.title ? <p className="type-small mb-6 text-center opacity-75">{config.title}</p> : null}
       {config.animated && items.length > 3 ? (
         <div className="ce-marquee group flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">

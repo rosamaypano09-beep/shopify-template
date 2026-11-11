@@ -7,12 +7,13 @@ import { midnight } from "./presets/midnight";
 import { minimal } from "./presets/minimal";
 import { organic } from "./presets/organic";
 import { tech } from "./presets/tech";
+import { velvet } from "./presets/velvet";
 import type { ThemePreset } from "./types";
 
 export type { ThemePreset, ThemeTokens, ThemeVariants, ProductCardStyle } from "./types";
 
 /** Add a preset: create a file in ./presets and register it here. */
-export const presets = { organic, luxury, minimal, fashion, beauty, food, tech, midnight } satisfies Record<string, ThemePreset>;
+export const presets = { organic, luxury, minimal, fashion, beauty, food, tech, midnight, velvet } satisfies Record<string, ThemePreset>;
 
 export type PresetId = keyof typeof presets;
 

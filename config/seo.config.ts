@@ -5,9 +5,10 @@ export const seoConfig: SeoConfig = {
   defaultTitle: "Bantay Daily: daily supplements for dogs",
   defaultDescription:
     "Chews, oils and powders for joints, skin, digestion and calm. Dosed by weight, delivered across the Philippines.",
-  defaultSocialImage: "/demo/hero.svg",
+  defaultSocialImage: "/demo/Hero.png",
   organization: {
-    name: "Bantay Daily",
+    // The business name search engines show for the site.
+    name: "PY Pastry Kitchen",
   },
   allowIndexing: process.env.VERCEL_ENV ? process.env.VERCEL_ENV === "production" : true,
 };

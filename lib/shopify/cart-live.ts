@@ -7,6 +7,10 @@ import type { Cart, CartSource, Money } from "./types";
 
 const CART_FRAGMENT = /* GraphQL */ `
   fragment CartFields on Cart {
+    attributes {
+      key
+      value
+    }
     id
     checkoutUrl
     totalQuantity
@@ -28,6 +32,10 @@ const CART_FRAGMENT = /* GraphQL */ `
       nodes {
         id
         quantity
+        attributes {
+          key
+          value
+        }
         cost {
           totalAmount {
             amount
@@ -136,6 +144,25 @@ export const CART_LINES_REMOVE_MUTATION = /* GraphQL */ `
   ${CART_FRAGMENT}
 `;
 
+export const CART_ATTRIBUTES_MUTATION = /* GraphQL */ `
+  mutation CartAttributesUpdate(
+    $cartId: ID!
+    $attributes: [AttributeInput!]!
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    cartAttributesUpdate(cartId: $cartId, attributes: $attributes) {
+      cart {
+        ...CartFields
+      }
+      userErrors {
+        message
+      }
+    }
+  }
+  ${CART_FRAGMENT}
+`;
+
 export const CART_DISCOUNT_CODES_MUTATION = /* GraphQL */ `
   mutation CartDiscountCodesUpdate(
     $cartId: ID!
@@ -157,6 +184,7 @@ export const CART_DISCOUNT_CODES_MUTATION = /* GraphQL */ `
 
 interface RawCart {
   id: string;
+  attributes?: { key: string; value: string | null }[] | null;
   checkoutUrl: string;
   totalQuantity: number;
   cost: { subtotalAmount: Money; totalAmount: Money };
@@ -165,6 +193,7 @@ interface RawCart {
     nodes: {
       id: string;
       quantity: number;
+      attributes?: { key: string; value: string | null }[] | null;
       cost: { totalAmount: Money; amountPerQuantity: Money; compareAtAmountPerQuantity?: Money | null };
       merchandise: {
         id?: string;
@@ -190,6 +219,9 @@ export function normalizeCart(raw: RawCart): Cart {
     subtotal: raw.cost.subtotalAmount,
     total: raw.cost.totalAmount,
     discountCodes: raw.discountCodes ?? [],
+    attributes: (raw.attributes ?? [])
+      .filter((attribute) => attribute.value)
+      .map((attribute) => ({ key: attribute.key, value: attribute.value as string })),
     lines: raw.lines.nodes
       // A line whose product was deleted comes back without merchandise details.
       .filter((line) => line.merchandise.id && line.merchandise.product)
@@ -205,6 +237,10 @@ export function normalizeCart(raw: RawCart): Cart {
         compareAtUnitPrice: effectiveCompareAt(line.cost.amountPerQuantity, line.cost.compareAtAmountPerQuantity),
         totalPrice: line.cost.totalAmount,
         availableForSale: line.merchandise.availableForSale ?? false,
+        // Keys starting with "_" are private (Shopify hides them from customers too).
+        attributes: (line.attributes ?? [])
+          .filter((attribute) => !attribute.key.startsWith("_") && attribute.value)
+          .map((attribute) => ({ key: attribute.key, value: attribute.value as string })),
       })),
   };
 }
@@ -270,5 +306,14 @@ export const liveCartSource: CartSource = {
       { cartId, discountCodes, ...getBuyerContext() },
     );
     return unwrap(data.cartDiscountCodesUpdate);
+  },
+
+  async updateAttributes(cartId, attributes) {
+    const data = await storefrontQuery<{ cartAttributesUpdate: CartPayload }, Vars>(CART_ATTRIBUTES_MUTATION, {
+      cartId,
+      attributes,
+      ...getBuyerContext(),
+    });
+    return unwrap(data.cartAttributesUpdate);
   },
 };

@@ -1,9 +1,13 @@
 import { Heart, Search, ShoppingBag, User, type LucideIcon } from "lucide-react";
 import Link from "next/link";
-import { getSiteConfig, type NavLink } from "@/config";
+import { getSiteConfig, type NavItem, type NavLink } from "@/config";
 import { CartButton } from "@/components/cart/cart-drawer";
 import { SearchDialog } from "@/components/search/search-dialog";
 import { getAccountUrl } from "@/lib/env";
+import { logger } from "@/lib/logger";
+import { menuToNavItems } from "@/lib/navigation";
+import { getMenu } from "@/lib/shopify";
+import { cn } from "@/lib/utils";
 import { DesktopNav } from "./desktop-nav";
 import { HeaderShell } from "./header-shell";
 import { Logo } from "./logo";
@@ -42,15 +46,38 @@ function getActions(): Action[] {
   return actions;
 }
 
-function HeaderContent() {
+/**
+ * The top menu: from Shopify (Online Store > Navigation) when navigation.source
+ * is "shopify", otherwise from config. Falls back to config whenever the
+ * Shopify menu is empty or cannot be read.
+ */
+async function getMenuItems(): Promise<{ main: NavItem[]; mobile: NavItem[] }> {
+  const { navigation } = getSiteConfig();
+  const fromConfig = { main: navigation.main, mobile: navigation.mobile ?? navigation.main };
+  if (navigation.source !== "shopify") return fromConfig;
+  try {
+    const items = menuToNavItems(await getMenu(navigation.shopifyMenuHandle || "main-menu"));
+    return items.length ? { main: items, mobile: items } : fromConfig;
+  } catch (error) {
+    logger.error("Shopify menu could not load", { scope: "navigation", error });
+    return fromConfig;
+  }
+}
+
+const navAlign = { left: "justify-self-start", center: "justify-self-center", right: "justify-self-end" } as const;
+
+async function HeaderContent() {
   const { store, navigation } = getSiteConfig();
+  const { header } = navigation;
   const actions = getActions();
+  const menu = await getMenuItems();
 
   return (
     <div className="container-site grid h-(--ce-header-height) grid-cols-[1fr_auto_1fr] items-center gap-3 lg:grid-cols-[auto_1fr_auto] lg:gap-8">
       <MobileMenu
         className="lg:hidden"
-        items={navigation.mobile ?? navigation.main}
+        items={menu.mobile}
+        viewAll={header.megaMenuViewAll ?? true}
         utilityLinks={actions.filter((a) => a.desktopOnly).map(({ label, href }) => ({ label, href }))}
       />
 
@@ -63,7 +90,15 @@ function HeaderContent() {
         <Logo logo={store.brand.logo} storeName={store.name} className="max-lg:justify-self-center" />
       )}
 
-      <DesktopNav items={navigation.main} className="max-lg:hidden" />
+      <DesktopNav
+        items={menu.main}
+        options={{
+          linkStyle: header.linkStyle ?? "pill",
+          uppercase: Boolean(header.uppercaseLinks),
+          viewAll: header.megaMenuViewAll ?? true,
+        }}
+        className={cn(navAlign[header.navAlign ?? "center"], "max-lg:hidden")}
+      />
 
       <ul className="flex items-center justify-end gap-1">
         {actions.map(({ label, href, icon: Icon, desktopOnly, kind }) => (

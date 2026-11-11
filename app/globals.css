@@ -54,6 +54,8 @@
   --color-secondary-foreground: var(--ce-color-secondary-foreground);
   --color-accent: var(--ce-color-accent);
   --color-accent-foreground: var(--ce-color-accent-foreground);
+  /* Brand colour nudged toward the text colour: readable as small text on the page background. */
+  --color-highlight: color-mix(in oklab, var(--ce-color-primary) 68%, var(--ce-color-text));
   --color-success: var(--ce-color-success);
   --color-warning: var(--ce-color-warning);
   --color-danger: var(--ce-color-danger);
@@ -74,6 +76,58 @@
   --spacing-section: var(--ce-space-section);
   --spacing-gutter: var(--ce-space-gutter);
   --container-site: var(--ce-space-container);
+}
+
+/*
+ * Coloured section bands. Each one re-points the colour tokens inside it, so
+ * every utility (text-muted, border-border, bg-primary...) stays readable.
+ * The --ce-page-* aliases are resolved on <html>, which avoids a token
+ * referring to itself when it is swapped.
+ */
+html {
+  --ce-page-background: var(--ce-color-background);
+  --ce-page-text: var(--ce-color-text);
+  --ce-page-primary: var(--ce-color-primary);
+  --ce-page-primary-foreground: var(--ce-color-primary-foreground);
+  --ce-page-secondary: var(--ce-color-secondary);
+  --ce-page-secondary-foreground: var(--ce-color-secondary-foreground);
+}
+
+.ce-band-inverse {
+  --ce-color-background: var(--ce-page-text);
+  --ce-color-text: var(--ce-page-background);
+  --ce-color-text-muted: color-mix(in oklab, var(--ce-page-background) 72%, var(--ce-page-text));
+  --ce-color-border: color-mix(in oklab, var(--ce-page-background) 22%, var(--ce-page-text));
+  --ce-color-surface: color-mix(in oklab, var(--ce-page-text) 92%, var(--ce-page-background));
+  background-color: var(--ce-page-text);
+}
+
+.ce-band-primary {
+  --ce-color-background: var(--ce-page-primary);
+  --ce-color-text: var(--ce-page-primary-foreground);
+  --ce-color-text-muted: color-mix(in oklab, var(--ce-page-primary-foreground) 82%, var(--ce-page-primary));
+  --ce-color-border: color-mix(in oklab, var(--ce-page-primary-foreground) 30%, var(--ce-page-primary));
+  --ce-color-surface: color-mix(in oklab, var(--ce-page-primary-foreground) 10%, var(--ce-page-primary));
+  /* Buttons on a brand-coloured band use the page colours instead, so they still stand out. */
+  --ce-color-primary: var(--ce-page-primary-foreground);
+  --ce-color-primary-foreground: var(--ce-page-primary);
+  background-color: var(--ce-page-primary);
+}
+
+.ce-band-secondary {
+  --ce-color-background: var(--ce-page-secondary);
+  --ce-color-text: var(--ce-page-secondary-foreground);
+  --ce-color-text-muted: color-mix(in oklab, var(--ce-page-secondary-foreground) 78%, var(--ce-page-secondary));
+  --ce-color-border: color-mix(in oklab, var(--ce-page-secondary-foreground) 22%, var(--ce-page-secondary));
+  --ce-color-surface: color-mix(in oklab, var(--ce-page-secondary-foreground) 8%, var(--ce-page-secondary));
+  background-color: var(--ce-page-secondary);
+}
+
+.ce-band-glow {
+  background-color: var(--ce-color-background);
+  background-image:
+    radial-gradient(ellipse 70% 60% at 50% 0%, color-mix(in oklab, var(--ce-color-primary) 34%, transparent), transparent 70%),
+    radial-gradient(ellipse 50% 50% at 85% 100%, color-mix(in oklab, var(--ce-color-primary) 18%, transparent), transparent 70%);
 }
 
 @layer base {
@@ -330,6 +384,105 @@
 }
 
 /*
+ * Long-form pages written in Shopify (Pages, blog posts): an editorial look.
+ * Used together with rich-text (class ce-editorial). Everything comes from theme tokens, so it
+ * follows any preset.
+ */
+.ce-editorial {
+  max-width: 68ch;
+  margin-inline: auto;
+  font-size: clamp(1.0625rem, 1.02rem + 0.2vw, 1.1875rem);
+  line-height: 1.8;
+  color: color-mix(in oklab, var(--ce-color-text) 86%, var(--ce-color-background));
+
+  & > * + * {
+    margin-top: 1.15em;
+  }
+  & strong,
+  & b {
+    color: var(--ce-color-text);
+    font-weight: 650;
+  }
+  & h2 {
+    position: relative;
+    margin-top: 2.4em;
+    padding-top: 0.75em;
+    color: var(--ce-color-text);
+    font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
+    line-height: 1.12;
+    text-wrap: balance;
+  }
+  /* A short brand-coloured mark above each section heading. */
+  & h2::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2.5rem;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--ce-color-primary);
+  }
+  & h3 {
+    margin-top: 2em;
+    color: var(--color-highlight);
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+    font-style: italic;
+  }
+  & h2 + *,
+  & h3 + * {
+    margin-top: 0.7em;
+  }
+  & h2:first-child {
+    margin-top: 0;
+  }
+  & img {
+    display: block;
+    width: 100%;
+    margin-block: 2.2em;
+    border-radius: 1.25rem;
+    box-shadow: var(--ce-shadow-lg);
+  }
+  /* A centred ornament instead of a plain line. */
+  & hr {
+    margin-block: 3em;
+    border: 0;
+    height: 1.5em;
+    background:
+      linear-gradient(var(--ce-color-border), var(--ce-color-border)) left center / calc(50% - 1.75em) 1px no-repeat,
+      linear-gradient(var(--ce-color-border), var(--ce-color-border)) right center / calc(50% - 1.75em) 1px no-repeat;
+    position: relative;
+  }
+  & hr::after {
+    content: "✦";
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--color-highlight);
+    font-size: 0.9em;
+  }
+  & blockquote {
+    margin-block: 2em;
+    padding: 0.4em 0 0.4em 1.25em;
+    border-left: 2px solid var(--ce-color-primary);
+    color: var(--ce-color-text);
+    font-family: var(--ce-font-heading, serif);
+    font-size: 1.3em;
+    font-style: italic;
+    line-height: 1.45;
+  }
+  & a {
+    color: var(--color-highlight);
+    text-decoration-thickness: 1px;
+  }
+  & ul li::marker,
+  & ol li::marker {
+    color: var(--color-highlight);
+  }
+}
+
+/*
  * Store Builder dashboard. It has its own neutral look so it reads the same
  * whatever the client's brand is. The storefront's --ce-* tokens are
  * re-declared inside .dashboard, so shared components adapt automatically.
@@ -397,5 +550,208 @@
   }
   .ce-marquee-track[aria-hidden] {
     display: none;
+  }
+}
+
+/*
+ * Animated section backdrops (SectionConfig.backdrop). Drawn in theme
+ * colours behind the section's content. The global reduced-motion rule and
+ * [data-animation="none"] stop them; they then rest as a still picture.
+ */
+.ce-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ce-backdrop-aurora::before,
+.ce-backdrop-aurora::after {
+  content: "";
+  position: absolute;
+  width: 70%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.55;
+}
+.ce-backdrop-aurora::before {
+  top: -35%;
+  left: -10%;
+  background: radial-gradient(closest-side, var(--ce-color-primary), transparent);
+  animation: ce-aurora-a 18s ease-in-out infinite alternate;
+}
+.ce-backdrop-aurora::after {
+  right: -15%;
+  bottom: -40%;
+  background: radial-gradient(closest-side, var(--ce-color-accent), transparent);
+  animation: ce-aurora-b 22s ease-in-out infinite alternate;
+}
+@keyframes ce-aurora-a {
+  to {
+    transform: translate(35%, 25%) scale(1.25);
+  }
+}
+@keyframes ce-aurora-b {
+  to {
+    transform: translate(-30%, -20%) scale(0.85);
+  }
+}
+
+.ce-backdrop-orbs span {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(28px);
+  opacity: 0.45;
+  background: radial-gradient(circle at 30% 30%, color-mix(in oklab, var(--ce-color-primary) 85%, white), var(--ce-color-primary) 60%, transparent 72%);
+  animation: ce-orb 16s ease-in-out infinite alternate;
+}
+.ce-backdrop-orbs span:nth-child(1) {
+  top: 10%;
+  left: 6%;
+  width: 14rem;
+  height: 14rem;
+}
+.ce-backdrop-orbs span:nth-child(2) {
+  top: 45%;
+  right: 8%;
+  width: 20rem;
+  height: 20rem;
+  animation-duration: 21s;
+  animation-delay: -6s;
+  background: radial-gradient(circle at 30% 30%, color-mix(in oklab, var(--ce-color-accent) 80%, white), var(--ce-color-accent) 60%, transparent 72%);
+}
+.ce-backdrop-orbs span:nth-child(3) {
+  bottom: -10%;
+  left: 38%;
+  width: 11rem;
+  height: 11rem;
+  animation-duration: 13s;
+  animation-delay: -3s;
+}
+@keyframes ce-orb {
+  50% {
+    transform: translate(3rem, -2.5rem) scale(1.1);
+  }
+  to {
+    transform: translate(-2rem, 2rem) scale(0.92);
+  }
+}
+
+.ce-backdrop-stars::before,
+.ce-backdrop-stars::after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  background-image:
+    radial-gradient(1.5px 1.5px at 20px 30px, var(--ce-color-text), transparent),
+    radial-gradient(1px 1px at 90px 120px, var(--ce-color-text), transparent),
+    radial-gradient(1.5px 1.5px at 160px 60px, var(--ce-color-primary), transparent),
+    radial-gradient(1px 1px at 210px 180px, var(--ce-color-text), transparent);
+  background-size: 240px 220px;
+  opacity: 0.35;
+  animation: ce-stars-drift 90s linear infinite, ce-twinkle 4s ease-in-out infinite alternate;
+}
+.ce-backdrop-stars::after {
+  background-size: 330px 290px;
+  opacity: 0.2;
+  animation-duration: 140s, 6s;
+  animation-delay: 0s, -2s;
+}
+@keyframes ce-stars-drift {
+  to {
+    transform: translate(240px, -220px);
+  }
+}
+@keyframes ce-twinkle {
+  to {
+    opacity: 0.6;
+  }
+}
+
+.ce-backdrop-gradient {
+  background: linear-gradient(
+    120deg,
+    color-mix(in oklab, var(--ce-color-primary) 28%, transparent),
+    transparent 35%,
+    transparent 65%,
+    color-mix(in oklab, var(--ce-color-accent) 28%, transparent)
+  );
+  background-size: 300% 300%;
+  animation: ce-gradient-shift 14s ease-in-out infinite alternate;
+}
+@keyframes ce-gradient-shift {
+  from {
+    background-position: 0% 30%;
+  }
+  to {
+    background-position: 100% 70%;
+  }
+}
+
+.ce-backdrop-grid {
+  background-image:
+    linear-gradient(var(--ce-color-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ce-color-border) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black, transparent);
+  opacity: 0.7;
+  animation: ce-grid-drift 12s linear infinite;
+}
+@keyframes ce-grid-drift {
+  to {
+    background-position: 56px 56px;
+  }
+}
+
+/* Brand marquee (components/sections/marquee.tsx). Speed and direction come from the section. */
+.ce-ticker-track {
+  animation: ce-marquee var(--ce-ticker-duration, 40s) linear infinite;
+  animation-direction: var(--ce-ticker-direction, normal);
+}
+.ce-ticker:hover .ce-ticker-track {
+  animation-play-state: paused;
+}
+.ce-ticker-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--ce-ticker-text, currentColor);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ce-ticker-track[aria-hidden] {
+    display: none;
+  }
+  .ce-ticker-track {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+/* Dialog entrances (trio picker). Phones: the sheet rises; larger screens: it fades and settles. */
+@keyframes ce-sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes ce-dialog-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.97);
+  }
+}
+@keyframes ce-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+.ce-overlay[data-state="open"] {
+  animation: ce-fade-in 200ms ease-out;
+}
+.ce-sheet[data-state="open"] {
+  animation: ce-sheet-up 320ms var(--ce-motion-ease);
+}
+@media (min-width: 40rem) {
+  .ce-sheet[data-state="open"] {
+    animation: ce-dialog-in 260ms var(--ce-motion-ease);
   }
 }

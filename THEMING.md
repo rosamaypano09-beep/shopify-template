@@ -20,6 +20,7 @@ A client's look comes from three files in `/config`. No component changes are ne
 | `food` | Warm and appetising | Bakery, cafe, restaurant, packaged food | Bricolage Grotesque + Figtree |
 | `tech` | Crisp, cool, compact | Electronics, gadgets, sports | Schibsted Grotesk for both |
 | `midnight` | Dark background, bright accent | Gaming, streetwear, premium tech | Bricolage Grotesque + Figtree |
+| `velvet` | Ink-dark pages, magenta accent, heavy serif, pill buttons | Patisserie, heritage food, gifting | Playfair Display + Figtree |
 
 Choose one in the dashboard (Branding), in `config/theme.config.ts`, or with the `THEME` environment variable. Every preset is tested to keep text readable on its backgrounds.
 
@@ -54,6 +55,7 @@ export const themeConfig: ThemeConfig = {
 | `primary` / `primaryForeground` | Main buttons, dark sections, dark footer |
 | `secondary` / `secondaryForeground` | Quiet buttons and info badges |
 | `accent` / `accentForeground` | Announcement bar, sale badges, highlight buttons |
+| `highlight` (derived) | `text-highlight`: the primary colour mixed toward the text colour, so it stays readable as small text. Hero eyebrow and headline accent |
 | `success`, `warning`, `danger` | Status messages |
 
 Each `…Foreground` color is the text that sits on its pair. When you change a color, check the pair still has a contrast ratio of at least 4.5:1 (https://webaim.org/resources/contrastchecker/).
@@ -68,7 +70,7 @@ Each `…Foreground` color is the text that sits on its pair. When you change a 
 
 ## Fonts
 
-Fonts are self-hosted from `assets/fonts` (no request to Google, no layout shift). Five variable fonts are bundled:
+Fonts are self-hosted from `assets/fonts` (no request to Google, no layout shift). Six variable fonts are bundled:
 
 ```text
 bricolage-grotesque-latin-wght-normal.woff2
@@ -76,6 +78,7 @@ figtree-latin-wght-normal.woff2
 cormorant-garamond-latin-wght-normal.woff2
 jost-latin-wght-normal.woff2
 schibsted-grotesk-latin-wght-normal.woff2
+playfair-display-latin-wght-normal.woff2
 ```
 
 To change a typeface, edit the `src` line in `config/fonts.ts`. To use a font that is not bundled, add its `.woff2` file to `assets/fonts` and point `src` at it. Check the font's licence allows self-hosting; fonts from Google Fonts do.
@@ -88,6 +91,10 @@ Switching preset does not switch fonts by itself, because Next.js needs font fil
 
 Type styles are utilities too: `type-display`, `type-h1` to `type-h4`, `type-body-lg`, `type-body`, `type-small`, `type-caption`, `type-button`. Sizes scale smoothly from 320px to 1440px wide.
 
+## Section icons
+
+About 70 icons, grouped, are listed in `lib/section-icons.ts` and drawn in `components/sections/icons.ts`. To add one, add its name to a group and its lucide icon to the map; TypeScript reports a name without a drawing.
+
 ## Homepage sections
 
 `config/homepage.config.ts` is a list. The page renders it top to bottom.
@@ -95,22 +102,33 @@ Type styles are utilities too: `type-display`, `type-h1` to `type-h4`, `type-bod
 - Reorder the list to reorder the page.
 - Set `enabled: false` to hide a section.
 - Copy an entry and give it a new `id` to use a section twice.
-- `background`: `default`, `surface` or `primary`.
+- Look options on every section except the hero:
+  - `background`: `default`, `surface`, `glow` (page colour with a brand glow), `secondary`, `primary` or `inverse` (page and text colours swapped). Each band re-points the colour tokens inside it, so muted text, borders and buttons stay readable.
+  - `shape`: `flat`, `curved` (arched top and bottom) or `card` (inset rounded panel).
+  - `backdrop`: an animated background in theme colours: `aurora`, `orbs`, `stars`, `gradient` or `grid`. Still for visitors who prefer less motion and when `variants.animation` is `none`.
+  - `spacing`: `compact`, `normal` or `spacious`. `align`: `left` or `center` for the heading.
+  - `eyebrow` (pill above the heading) and `titleAccent` (a second heading line in the brand colour).
 
 Available now:
 
 | `type` | What it shows |
 | --- | --- |
-| `hero` | Headline, text, two buttons, image. `variant`: `split` or `centered`. Optional `mobileSrc` for a separate crop on phones |
+| `hero` | Headline, text, two buttons, image. `variant`: `split`, `centered` or `spotlight` (dark band, uppercase serif headline with a highlighted second line `titleAccent`, `eyebrow`, ruled copy, `proof` line, glowing photo). `addToCartHandle` (and optional `addToCartVariant`) makes the main button add that product to the cart. Optional `mobileSrc` for a separate crop on phones |
 | `benefits` | A row of short promises with icons. List only what the client really offers |
 | `collectionGrid` | Tiles for the collection handles you list |
-| `featuredProducts` | The first N products of one collection |
+| `featuredProducts` | Products of one collection. Optional filter `tabs` (one collection each), `columns` (`2`, `3`, `4`) and `quickAdd` (Add to bag on each card; products with options show Choose) |
+| `highlights` | A slim strip of short facts separated by dots |
+| `featureBand` | A statement with icon items and an optional big number. `itemStyle`: `chips`, `outline`, `solid`, `cards`, `icons`, `list`; `columns` (`2`–`4`, `auto`); `iconShape`; `layout` `centered` or `split`. `stat`: typed, or `source: "shopifyOrders"` (needs `SHOPIFY_ADMIN_CLIENT_ID` + `SHOPIFY_ADMIN_CLIENT_SECRET` from a Dev Dashboard app with `read_orders`), rounded down with `roundDown`; `countUp` with `countSeconds` |
+| `marquee` | Brand words scrolling across the page: own `font` (theme fonts or one of six bundled), `weight`, `italic`, `uppercase`, `textStyle` (outline/alternate), `size`, hex `backgroundColor`/`textColor`/`accentColor`, `separator`, `speed`, `direction`, `doubleRow`, `tilt` |
+| `productSpotlight` | "Pick your favourite". `products` (Shopify handles with short `label`s) become choice buttons; the main button (`buttonLabel` with `{name}`, `priceInButton`) adds the chosen one; `showFromPrice`. Other half: `visual` `image` or `menu` (round tiles that add to the bag, `menu.items`, round `linkLabel` badge). `bundle`: a Shopify product priced as the bundle; visitors choose any `size` and the flavours are saved on the cart line. Custom hex `visualBackground`, `panelBackground`, `panelText`. Without `products`, `productHandle` shows one product's own options |
 | `brandStatement` | One large sentence with an optional button |
-| `imageText` | An image beside a heading, paragraph and button |
+| `imageText` | An image beside a heading, paragraph, optional small `cards` and a button. `imageFit`: `cover` or `contain` |
 | `testimonials` | Customer quotes. Real customers only |
-| `logoMarquee` | A "trusted by" row of partner or press logos, optionally scrolling |
-| `faq` | Questions and answers |
+| `logoMarquee` | Partner or press names or logos: a `row` (optionally scrolling) or a small centred `card`. `highlight` on a name shows it in the brand colour, lowercase italic |
+| `faq` | Questions and answers. `layout`: `stacked` or `split` (heading beside the questions) |
 | `newsletter` | Email sign-up |
+| `blogPosts` | The newest posts from a Shopify blog (`blogHandle`, default `news`). `layout`: `grid`, `featured` or `list`; `columns`; `tag` to show one topic; `showExcerpt`, `showDate`, `showAuthor`, `showTags`; `readMoreLabel` |
+| `shopifyPage` | Text of a page written in Shopify (Online Store > Pages), whole or as an excerpt with Read more, optionally beside an image |
 
 Sections that load Shopify data hide themselves if the data is empty or unavailable.
 

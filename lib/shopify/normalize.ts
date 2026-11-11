@@ -1,4 +1,6 @@
 import type {
+  Article,
+  ArticleSummary,
   Collection,
   Money,
   Product,
@@ -6,6 +8,8 @@ import type {
   ProductSummary,
   ProductVariant,
   ShopImage,
+  ShopMenuItem,
+  ShopPage,
 } from "./types";
 
 /* Raw shapes: exactly what the queries in live.ts select. */
@@ -30,6 +34,7 @@ export interface RawProductSummary {
   compareAtPriceRange?: { minVariantPrice: Money } | null;
   rating?: { value: string } | null;
   ratingCount?: { value: string } | null;
+  quickVariants?: { nodes: { id: string; availableForSale: boolean }[] } | null;
 }
 
 export interface RawVariant {
@@ -97,6 +102,10 @@ export function normalizeRating(rating: string | null | undefined, count: string
   }
 }
 
+export function quickAddVariant(variants: { id: string; availableForSale: boolean }[] | null | undefined): string | null {
+  return variants?.length === 1 && variants[0].availableForSale ? variants[0].id : null;
+}
+
 export function normalizeProductSummary(raw: RawProductSummary): ProductSummary {
   const images = (raw.images?.nodes ?? []).map(normalizeImage).filter((i): i is ShopImage => i !== null);
   const featuredImage = normalizeImage(raw.featuredImage) ?? images[0] ?? null;
@@ -115,6 +124,7 @@ export function normalizeProductSummary(raw: RawProductSummary): ProductSummary 
     hasPriceRange: raw.priceRange.minVariantPrice.amount !== raw.priceRange.maxVariantPrice.amount,
     compareAtPrice: effectiveCompareAt(price, raw.compareAtPriceRange?.minVariantPrice),
     rating: normalizeRating(raw.rating?.value, raw.ratingCount?.value),
+    quickAddVariantId: quickAddVariant(raw.quickVariants?.nodes),
   };
 }
 
@@ -161,4 +171,111 @@ export function normalizeCollection(raw: RawCollection): Collection {
     seo: { title: raw.seo?.title ?? null, description: raw.seo?.description ?? null },
     updatedAt: raw.updatedAt,
   };
+}
+
+/* ---------- Content ---------- */
+
+export interface RawArticleSummary {
+  id: string;
+  handle: string;
+  title: string;
+  excerpt?: string | null;
+  contentPreview?: string | null;
+  publishedAt: string;
+  image?: RawImage | null;
+  authorV2?: { name?: string | null } | null;
+  tags?: string[] | null;
+  blog?: { handle: string } | null;
+}
+
+export interface RawArticle extends RawArticleSummary {
+  contentHtml?: string | null;
+  seo?: { title?: string | null; description?: string | null } | null;
+}
+
+export interface RawPage {
+  id: string;
+  handle: string;
+  title: string;
+  body?: string | null;
+  bodySummary?: string | null;
+  updatedAt: string;
+  seo?: { title?: string | null; description?: string | null } | null;
+}
+
+export interface RawMenuItem {
+  title: string;
+  url?: string | null;
+  type?: string | null;
+  items?: RawMenuItem[] | null;
+}
+
+export function normalizeArticleSummary(raw: RawArticleSummary, blogHandle?: string): ArticleSummary {
+  return {
+    id: raw.id,
+    handle: raw.handle,
+    blogHandle: raw.blog?.handle ?? blogHandle ?? "news",
+    title: raw.title,
+    excerpt: raw.excerpt?.trim() || raw.contentPreview?.replace(/\s+/g, " ").trim() || "",
+    publishedAt: raw.publishedAt,
+    image: normalizeImage(raw.image),
+    author: raw.authorV2?.name?.trim() || null,
+    tags: raw.tags ?? [],
+  };
+}
+
+export function normalizeArticle(raw: RawArticle, blogHandle?: string): Article {
+  return {
+    ...normalizeArticleSummary(raw, blogHandle),
+    contentHtml: raw.contentHtml ?? "",
+    standfirst: raw.excerpt?.trim() ?? "",
+    seo: { title: raw.seo?.title ?? null, description: raw.seo?.description ?? null },
+  };
+}
+
+export function normalizePage(raw: RawPage): ShopPage {
+  return {
+    id: raw.id,
+    handle: raw.handle,
+    title: raw.title,
+    body: raw.body ?? "",
+    bodySummary: raw.bodySummary ?? "",
+    seo: { title: raw.seo?.title ?? null, description: raw.seo?.description ?? null },
+    updatedAt: raw.updatedAt,
+  };
+}
+
+/**
+ * Shopify menu links are absolute URLs on the shop's own domain
+ * (https://shop.myshopify.com/collections/pies). Links to the shop's own
+ * resources become storefront paths; custom links elsewhere stay external.
+ */
+export function menuItemHref(url: string | null | undefined, type: string | null | undefined, shopHosts: string[]): { href: string; external: boolean } {
+  if (!url) return { href: "/", external: false };
+  if (url.startsWith("/")) return { href: internalPath(url), external: false };
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    return { href: "/", external: false };
+  }
+  const ownHost = shopHosts.includes(parsed.hostname) || parsed.hostname.endsWith(".myshopify.com");
+  // Resource links (collection, page, blog...) always point at this shop, whatever domain Shopify printed.
+  const isResource = Boolean(type && type !== "HTTP");
+  if (!ownHost && !isResource) return { href: url, external: true };
+  return { href: internalPath(`${parsed.pathname}${parsed.search}${parsed.hash}`), external: false };
+}
+
+function internalPath(path: string): string {
+  if (path === "/collections/all" || path.startsWith("/collections/all?")) return "/collections";
+  return path || "/";
+}
+
+export function normalizeMenu(items: RawMenuItem[] | null | undefined, shopHosts: string[]): ShopMenuItem[] {
+  return (items ?? [])
+    .filter((item) => item.title?.trim())
+    .map((item) => {
+      const { href, external } = menuItemHref(item.url, item.type, shopHosts);
+      return { title: item.title.trim(), href, external, items: normalizeMenu(item.items, shopHosts) };
+    });
 }

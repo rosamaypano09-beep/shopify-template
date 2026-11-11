@@ -85,3 +85,31 @@ export function getAccountUrl(): string | null {
   if (shopId && /^\d+$/.test(shopId)) return `https://shopify.com/${shopId}/account`;
   return null;
 }
+
+/**
+ * Optional Admin API access, used only to read the store's order count for a
+ * "proof number". Server-only: never sent to browsers. Either:
+ *   - SHOPIFY_ADMIN_CLIENT_ID + SHOPIFY_ADMIN_CLIENT_SECRET, from an app made
+ *     in the Shopify Dev Dashboard (dev.shopify.com) with the read_orders
+ *     scope, installed on this store. The server exchanges them for a token
+ *     that lasts 24 hours (Shopify's client credentials grant). Works only
+ *     when the app and the store belong to the same Shopify organization.
+ *   - or SHOPIFY_ADMIN_ACCESS_TOKEN, an older custom app's fixed shpat_ token.
+ */
+export type AdminConnection = {
+  storeDomain: string;
+  apiVersion: string;
+  auth: { kind: "token"; token: string } | { kind: "client"; clientId: string; clientSecret: string };
+};
+
+export function getAdminConnection(): AdminConnection | null {
+  const connection = getShopifyConnection();
+  if (connection.mode !== "live") return null;
+  const base = { storeDomain: connection.storeDomain, apiVersion: connection.apiVersion ?? "2026-07" };
+  const token = process.env.SHOPIFY_ADMIN_ACCESS_TOKEN?.trim();
+  if (token) return { ...base, auth: { kind: "token", token } };
+  const clientId = process.env.SHOPIFY_ADMIN_CLIENT_ID?.trim();
+  const clientSecret = process.env.SHOPIFY_ADMIN_CLIENT_SECRET?.trim();
+  if (clientId && clientSecret) return { ...base, auth: { kind: "client", clientId, clientSecret } };
+  return null;
+}

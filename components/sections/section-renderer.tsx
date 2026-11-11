@@ -1,13 +1,19 @@
 import type { SectionConfig } from "@/config";
 import { Benefits } from "./benefits";
+import { BlogPosts } from "./blog-posts";
 import { BrandStatement } from "./brand-statement";
 import { CollectionGrid } from "./collection-grid";
 import { Faq } from "./faq";
+import { FeatureBand } from "./feature-band";
 import { FeaturedProducts } from "./featured-products";
 import { Hero } from "./hero";
+import { Highlights } from "./highlights";
 import { ImageText } from "./image-text";
 import { LogoMarquee } from "./logo-marquee";
+import { Marquee } from "./marquee";
 import { Newsletter } from "./newsletter";
+import { ProductSpotlight } from "./product-spotlight";
+import { ShopifyPageSection } from "./shopify-page";
 import { Testimonials } from "./testimonials";
 
 /**
@@ -39,6 +45,18 @@ function renderSection(section: SectionConfig) {
       return <LogoMarquee config={section} />;
     case "imageText":
       return <ImageText config={section} />;
+    case "blogPosts":
+      return <BlogPosts config={section} />;
+    case "highlights":
+      return <Highlights config={section} />;
+    case "featureBand":
+      return <FeatureBand config={section} />;
+    case "productSpotlight":
+      return <ProductSpotlight config={section} />;
+    case "marquee":
+      return <Marquee config={section} />;
+    case "shopifyPage":
+      return <ShopifyPageSection config={section} />;
     default: {
       const unhandled: never = section;
       return unhandled;

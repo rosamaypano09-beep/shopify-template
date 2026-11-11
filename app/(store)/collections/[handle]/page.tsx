@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { getSiteConfig } from "@/config";
+import { CollectionIntro } from "@/components/collection/collection-intro";
 import { FilterDrawer } from "@/components/collection/filter-drawer";
 import { FilterPanel } from "@/components/collection/filter-panel";
 import { SortSelect } from "@/components/collection/sort-select";
@@ -89,7 +90,7 @@ async function CollectionContent({ params, searchParams }: Props) {
       <header className="mt-4 mb-8 flex flex-col gap-4 sm:mb-10">
         <h1 className="type-h1">{collection.title}</h1>
         {collection.description ? (
-          <p className="type-body-lg max-w-[56ch] text-muted">{collection.description}</p>
+          <CollectionIntro text={collection.description} />
         ) : null}
       </header>
 

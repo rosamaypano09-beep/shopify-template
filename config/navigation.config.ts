@@ -1,6 +1,10 @@
 import type { NavigationConfig } from "./types";
 
 export const navigationConfig: NavigationConfig = {
+  // "shopify" reads the header menu from Shopify admin (Online Store > Navigation).
+  source: "config",
+  shopifyMenuHandle: "main-menu",
+
   header: {
     sticky: true,
     transparent: false,
@@ -10,6 +14,10 @@ export const navigationConfig: NavigationConfig = {
     showWishlist: true,
     // Needs SHOPIFY_SHOP_ID and features.customerAccounts (see SHOPIFY_SETUP.md).
     showAccount: true,
+    navAlign: "center",
+    linkStyle: "pill",
+    uppercaseLinks: false,
+    megaMenuViewAll: true,
   },
 
   announcement: {
@@ -35,7 +43,7 @@ export const navigationConfig: NavigationConfig = {
             },
             {
               label: "Whole Pies",
-              href: "/collections/whole-pies",
+              href: "/collections/whole-pie",
             },
           ],
         },
@@ -84,7 +92,8 @@ export const navigationConfig: NavigationConfig = {
         description:
           "From bite-sized mini pies to generous whole pies, discover Filipino-inspired flavors made for sharing, gifting, and every sweet occasion.",
         href: "/collections/best-sellers",
-        image: "/demo/products/pie-collection.jpg",
+        image: "/demo/Hero.png",
+        ctaLabel: "Shop best sellers",
       },
     },
 
@@ -95,7 +104,7 @@ export const navigationConfig: NavigationConfig = {
 
     {
       label: "Whole Pies",
-      href: "/collections/whole-pies",
+      href: "/collections/whole-pie",
     },
 
     {
@@ -104,8 +113,13 @@ export const navigationConfig: NavigationConfig = {
     },
 
     {
+      label: "Journal",
+      href: "/blogs/news",
+    },
+
+    {
       label: "About Us",
-      href: "/pages/about-us",
+      href: "/about",
     },
   ],
 
@@ -123,7 +137,7 @@ export const navigationConfig: NavigationConfig = {
         },
         {
           label: "Whole Pies",
-          href: "/collections/whole-pies",
+          href: "/collections/whole-pie",
         },
         {
           label: "Assorted Pies",
@@ -163,7 +177,7 @@ export const navigationConfig: NavigationConfig = {
       links: [
         {
           label: "About Us",
-          href: "/pages/about-us",
+          href: "/about",
         },
         {
           label: "Contact Us",
@@ -171,11 +185,13 @@ export const navigationConfig: NavigationConfig = {
         },
         {
           label: "FAQs",
-          href: "/pages/faqs",
+          href: "/faq",
         },
       ],
     },
   ],
+
+  footerShopifyPages: { enabled: false, title: "Pages" },
 
   // Privacy, terms, refund and shipping policy links go here.
   // The text must be written or approved by the client; the engine never invents legal copy.

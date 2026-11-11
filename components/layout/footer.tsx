@@ -4,7 +4,7 @@ import { NewsletterForm } from "@/components/forms/forms";
 import { SiteLink } from "@/components/ui/site-link";
 import { formMode } from "@/lib/forms/delivery";
 import { logger } from "@/lib/logger";
-import { getPolicies } from "@/lib/shopify";
+import { getPolicies, listContent } from "@/lib/shopify";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
 import { SocialLinks } from "./social-links";
@@ -34,6 +34,17 @@ export async function Footer() {
     pages.faq.enabled ? { label: "FAQ", href: "/faq" } : null,
     pages.contact.enabled ? { label: "Contact", href: "/contact" } : null,
   ].filter((link) => link !== null);
+  // Optionally, a column listing every page written in Shopify, so new pages appear without editing the menu.
+  const footerGroups = [...navigation.footer];
+  const shopifyPages = navigation.footerShopifyPages;
+  if (shopifyPages?.enabled) {
+    try {
+      const listed = (await listContent()).pages.map((page) => ({ label: page.title, href: `/pages/${page.handle}` }));
+      if (listed.length) footerGroups.push({ title: shopifyPages.title || "Pages", links: listed });
+    } catch (error) {
+      logger.error("Footer could not load Shopify pages", { scope: "footer", error });
+    }
+  }
   const showNewsletter = features.newsletter && formMode("newsletter") !== "off";
   const { contact } = store;
   const year = await getCurrentYear();
@@ -42,8 +53,8 @@ export async function Footer() {
 
   return (
     <footer className={cn("mt-auto", onPrimary ? "bg-primary text-primary-foreground" : "bg-surface text-foreground")}>
-      <div className="container-site grid gap-x-10 gap-y-12 py-16 md:grid-cols-2 lg:grid-cols-[1.6fr_repeat(3,1fr)] lg:py-20">
-        <div className="flex max-w-sm flex-col gap-4">
+      <div className="container-site grid grid-cols-2 gap-x-6 gap-y-10 py-14 sm:gap-x-10 sm:gap-y-12 sm:py-16 md:grid-cols-2 lg:grid-cols-[1.6fr_repeat(3,1fr)] lg:py-20">
+        <div className="col-span-2 flex max-w-sm flex-col gap-4 md:col-span-1">
           <Logo logo={store.brand.footerLogo ?? store.brand.logo} storeName={store.name} />
           <p className="type-body opacity-80">{store.description}</p>
           <SocialLinks social={store.social} className="type-small mt-2 flex flex-wrap gap-x-5" />
@@ -66,7 +77,7 @@ export async function Footer() {
           ) : null}
         </div>
 
-        {navigation.footer.map((group) => (
+        {footerGroups.map((group) => (
           <nav key={group.title} aria-label={group.title}>
             <h2 className="type-h4 mb-3">{group.title}</h2>
             <ul>
@@ -86,7 +97,7 @@ export async function Footer() {
         ))}
 
         {hasContact ? (
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <h2 className="type-h4 mb-3">Contact</h2>
             <address className="flex flex-col gap-2 not-italic opacity-80">
               {contact.email ? (

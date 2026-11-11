@@ -2,9 +2,13 @@ import { ExternalLink } from "lucide-react";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { DashboardLoading } from "@/components/dashboard/settings-page";
+import { OrderCountStatus } from "@/components/dashboard/order-count-status";
+import { RefreshShopifyButton } from "@/components/dashboard/refresh-shopify";
 import { PageHeader } from "@/components/dashboard/shell";
 import { assertAdmin } from "@/lib/dashboard/session";
+import { getDashboardConfig } from "@/lib/dashboard/values";
 import { getShopifyConnection } from "@/lib/env";
+import { getBlog, getMenu } from "@/lib/shopify";
 
 export const metadata: Metadata = { title: "Shopify" };
 
@@ -28,9 +32,10 @@ const GROUPS: { title: string; links: { label: string; path: string; note: strin
   {
     title: "Content",
     links: [
-      { label: "Blog posts", path: "/content/articles", note: "The storefront blog is not built yet; posts will appear once it is." },
+      { label: "Blog posts", path: "/content/articles", note: "Published posts appear at /blogs/<blog handle> and in a Blog posts homepage section." },
+      { label: "Pages", path: "/pages", note: "Published pages appear at /pages/<handle>, for example /pages/about-us." },
       { label: "Files", path: "/content/files", note: "Upload images, then paste their address into a homepage section." },
-      { label: "Menus", path: "/content/menus", note: "The site's menus are set in Navigation here, not in Shopify." },
+      { label: "Menus", path: "/menus", note: "Pick a Shopify menu as the header menu in Navigation here." },
       { label: "Metaobjects", path: "/content/metaobjects", note: "" },
       { label: "Policies", path: "/settings/legal", note: "Privacy, terms, refund and shipping. They appear on the site automatically." },
     ],
@@ -90,6 +95,60 @@ async function Links() {
   );
 }
 
+/** What the storefront currently reads from Shopify's content screens. */
+async function ContentStatus() {
+  await assertAdmin();
+  if (getShopifyConnection().mode !== "live") return null;
+  const { navigation, homepage } = await getDashboardConfig();
+  const blogHandles = [
+    ...new Set(["news", ...homepage.sections.flatMap((section) => (section.type === "blogPosts" ? [section.blogHandle] : []))]),
+  ];
+  const menuHandle = navigation.shopifyMenuHandle || "main-menu";
+  const [blogs, menu] = await Promise.all([
+    Promise.all(blogHandles.map(async (handle) => ({ handle, blog: await getBlog(handle, { first: 3 }).catch(() => null) }))),
+    getMenu(menuHandle).catch(() => []),
+  ]);
+
+  return (
+    <section className="mb-6 rounded-lg border border-border bg-background p-5 sm:p-6">
+      <h2 className="text-base font-semibold">Content on the site</h2>
+      <p className="mt-1 text-sm text-muted">Read from Shopify. Changes made in Shopify appear within a few minutes, or at once after Refresh from Shopify.</p>
+      <ul className="mt-4 divide-y divide-border text-sm">
+        {blogs.map(({ handle, blog }) => (
+          <li key={handle} className="flex min-h-12 flex-wrap items-center justify-between gap-2 py-2">
+            <span>
+              <span className="font-medium">Blog &ldquo;{handle}&rdquo;</span>
+              <span className="block text-xs text-muted">
+                {blog
+                  ? blog.articles.length
+                    ? `Latest: ${blog.articles.map((article) => article.title).join(" · ")}`
+                    : "No published posts yet."
+                  : "Not found in Shopify, or not published to the Headless channel."}
+              </span>
+            </span>
+            {blog ? (
+              <a href={`/blogs/${handle}`} target="_blank" rel="noopener" className="text-xs font-medium underline underline-offset-4">
+                View on site
+              </a>
+            ) : null}
+          </li>
+        ))}
+        <li className="flex min-h-12 flex-col justify-center gap-0.5 py-2">
+          <span className="font-medium">
+            Menu &ldquo;{menuHandle}&rdquo;{" "}
+            <span className="font-normal text-muted">
+              ({navigation.source === "shopify" ? "used as the header menu" : "not in use; switch it on in Navigation"})
+            </span>
+          </span>
+          <span className="text-xs text-muted">
+            {menu.length ? menu.map((item) => item.title).join(" · ") : "Empty or not found."}
+          </span>
+        </li>
+      </ul>
+    </section>
+  );
+}
+
 export default function ShopifyPage() {
   return (
     <>
@@ -97,6 +156,13 @@ export default function ShopifyPage() {
         title="Shopify"
         description="Products, collections, discounts, orders and customers are stored in Shopify. These links open the right Shopify screen in a new tab; changes show on the site within about a minute."
       />
+      <RefreshShopifyButton className="-mt-4 mb-6" />
+      <Suspense fallback={null}>
+        <OrderCountStatus always />
+      </Suspense>
+      <Suspense fallback={null}>
+        <ContentStatus />
+      </Suspense>
       <Suspense fallback={<DashboardLoading />}>
         <Links />
       </Suspense>

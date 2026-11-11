@@ -1,7 +1,9 @@
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getLinkSuggestions } from "@/lib/dashboard/links";
 import { currentValues } from "@/lib/dashboard/values";
 import { SettingsForm, type FieldGroup } from "./fields";
+import { LinkSuggestionsProvider } from "./link-input";
 import { PageHeader } from "./shell";
 
 export function DashboardLoading() {
@@ -15,7 +17,12 @@ export function DashboardLoading() {
 
 async function LoadedForm({ groups }: { groups: FieldGroup[] }) {
   const paths = groups.flatMap((group) => group.fields.map((field) => field.key));
-  return <SettingsForm groups={groups} values={await currentValues(paths)} />;
+  const [values, suggestions] = await Promise.all([currentValues(paths), getLinkSuggestions()]);
+  return (
+    <LinkSuggestionsProvider suggestions={suggestions}>
+      <SettingsForm groups={groups} values={values} />
+    </LinkSuggestionsProvider>
+  );
 }
 
 /** A whole settings screen from a list of field groups. The saved values load behind a placeholder. */
