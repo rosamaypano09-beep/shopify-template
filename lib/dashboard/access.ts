@@ -14,7 +14,15 @@
  * config/site.json to GitHub and the host redeploys (about a minute).
  */
 
+import { createHash } from "node:crypto";
+
 const env = (name: string) => process.env[name]?.trim() ?? "";
+
+/**
+ * TEMPORARY: used when DASHBOARD_PASSWORD is not set. Remove this and set a
+ * real DASHBOARD_PASSWORD in Vercel before handing the site to a client.
+ */
+const TEMPORARY_PASSWORD = "2026";
 
 export function githubTarget(): { token: string; repo: string; branch: string } | null {
   const token = env("GITHUB_TOKEN");
@@ -25,11 +33,16 @@ export function githubTarget(): { token: string; repo: string; branch: string } 
 
 export function sessionSecret(): string | null {
   const secret = env("SESSION_SECRET");
-  return secret.length >= 32 ? secret : null;
+  if (secret.length >= 32) return secret;
+  // TEMPORARY: without SESSION_SECRET, derive one from the GitHub token, which
+  // is already a server-only secret. Never a value written in this file.
+  const token = env("GITHUB_TOKEN");
+  return token ? createHash("sha256").update(`dashboard-session:${token}`).digest("hex") : null;
 }
 
 export function dashboardPassword(): string | null {
   const password = env("DASHBOARD_PASSWORD");
+  if (!password) return TEMPORARY_PASSWORD;
   return password.length >= 12 ? password : null;
 }
 
