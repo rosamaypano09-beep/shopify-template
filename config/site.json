@@ -538,7 +538,7 @@
     "titleTemplate": "%s | Purple Yam"
   },
   "theme": {
-    "preset": "velvet",
+    "preset": "midnight",
     "tokens": {
       "colors": {
         "background": "#A42DB8"
