@@ -54,20 +54,6 @@
         "straightOnPhones": true
       },
       {
-        "id": "shop-by-need",
-        "enabled": true,
-        "background": "surface",
-        "type": "collectionGrid",
-        "title": "What are you craving?",
-        "description": "Explore our selection of freshly made pies, from whole pies to petite treats.",
-        "handles": [
-          "best-sellers",
-          "whole-pie",
-          "mini-pies",
-          "petit-pies"
-        ]
-      },
-      {
         "id": "benefits",
         "enabled": true,
         "type": "benefits",
@@ -82,6 +68,20 @@
             "title": "Pickup & Delivery",
             "body": "Order ahead and enjoy Purple Yam pies through pickup or delivery in Manila."
           }
+        ]
+      },
+      {
+        "id": "shop-by-need",
+        "enabled": true,
+        "background": "surface",
+        "type": "collectionGrid",
+        "title": "What are you craving?",
+        "description": "Explore our selection of freshly made pies, from whole pies to petite treats.",
+        "handles": [
+          "best-sellers",
+          "whole-pie",
+          "mini-pies",
+          "petit-pies"
         ]
       },
       {
